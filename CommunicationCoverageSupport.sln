@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationCoverageSupport.API", "CommunicationCoverageSupport.API\CommunicationCoverageSupport.API.csproj", "{C7CE340E-EE47-42DB-9068-3C620E055F6D}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationCoverageSupport.DAL", "CommunicationCoverageSupport.DAL\CommunicationCoverageSupport.DAL.csproj", "{70A8CACC-E51C-419B-86AE-9ACB66E4611C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationCoverageSupport.Models", "CommunicationCoverageSupport.Models\CommunicationCoverageSupport.Models.csproj", "{C99659AA-9092-4ED4-963F-1A011638AC68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationCoverageSupport.Presentation", "CommunicationCoverageSupport.Presentation\CommunicationCoverageSupport.Presentation.csproj", "{0352FF6C-4463-48B2-81C3-5AEAB7AAB7CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{C99659AA-9092-4ED4-963F-1A011638AC68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C99659AA-9092-4ED4-963F-1A011638AC68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C99659AA-9092-4ED4-963F-1A011638AC68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0352FF6C-4463-48B2-81C3-5AEAB7AAB7CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0352FF6C-4463-48B2-81C3-5AEAB7AAB7CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0352FF6C-4463-48B2-81C3-5AEAB7AAB7CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0352FF6C-4463-48B2-81C3-5AEAB7AAB7CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
