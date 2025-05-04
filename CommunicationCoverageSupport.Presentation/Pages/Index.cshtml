@@ -1,10 +1,26 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Welcome";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5">
+    <h1 class="display-4">Communication Coverage Support</h1>
+    @if (!string.IsNullOrEmpty(Model.JwtToken))
+    {
+        <div class="alert alert-success mt-4">
+            <strong>JWT Token:</strong><br />
+            <small>@Model.JwtToken</small>
+        </div>
+    }
+    <p class="lead">Helping businesses manage and monitor mobile SIM cards with ease.</p>
+    <hr class="my-4" />
+    <p>
+        Our platform empowers corporate clients to access, control, and audit their distributed SIM cards
+        in real-time. Designed for reliability, security, and efficiency.
+    </p>
+    <p>
+        Whether you're a telecom partner or a company managing thousands of devices, we help streamline
+        communication coverage with modern web tools.
+    </p>
 </div>

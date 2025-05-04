@@ -12,9 +12,11 @@ namespace CommunicationCoverageSupport.Presentation.Pages
             _logger = logger;
         }
 
+        public string? JwtToken { get; set; }
+
         public void OnGet()
         {
-
+            JwtToken = HttpContext.Session.GetString("JwtToken");
         }
     }
 }
