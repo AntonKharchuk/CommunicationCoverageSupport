@@ -1,0 +1,80 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Hero Section -->
+<section class="hero bg-light text-center py-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Communication Coverage Support</h1>
+        <p class="lead">Managing corporate SIM card fleets has never been easier.</p>
+        <a class="btn btn-primary btn-lg mt-3" asp-page="/Login">Get Started</a>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="bg-white py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Why Choose Us?</h2>
+        <p class="text-muted fs-5">
+            We provide a full solution for businesses needing to manage hundreds or thousands of SIM cards under custom plans, restrictions, and full audit history.
+        </p>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <i class="bi bi-person-check display-4 text-primary"></i>
+                <h5 class="mt-3">1. Login</h5>
+                <p>Each client company gets secure login access to manage their SIM card fleet.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="bi bi-sim display-4 text-primary"></i>
+                <h5 class="mt-3">2. Manage Cards</h5>
+                <p>View, filter, and configure SIM cards by plan, restriction, or status.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="bi bi-clock-history display-4 text-primary"></i>
+                <h5 class="mt-3">3. Track Changes</h5>
+                <p>Every change is logged. Monitor usage and updates in real-time with full history.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials py-5 bg-white">
+    <div class="container text-center">
+        <h2 class="mb-5">What Our Clients Say</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-5 mb-4">
+                <div class="p-4 shadow-sm border rounded bg-light h-100">
+                    <i class="bi bi-chat-quote-fill fs-2 text-primary mb-3"></i>
+                    <p class="mb-2">"We manage over 3,000 SIMs with CCS — it saved us 20+ hours a week!"</p>
+                    <div class="text-muted fst-italic small">IT Director, <strong>UkrMobile Logistics</strong></div>
+                </div>
+            </div>
+            <div class="col-md-5 mb-4">
+                <div class="p-4 shadow-sm border rounded bg-light h-100">
+                    <i class="bi bi-chat-quote-fill fs-2 text-primary mb-3"></i>
+                    <p class="mb-2">"Finally a system that’s designed for large-scale SIM tracking and reporting."</p>
+                    <div class="text-muted fst-italic small">CTO, <strong>NovaNetworks</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="bg-primary text-white text-center py-5">
+    <div class="container">
+        <h2 class="mb-3">Start Managing Your SIM Fleet Today</h2>
+        <a class="btn btn-light btn-lg" asp-page="/Register">Create Account</a>
+    </div>
+</section>
+
