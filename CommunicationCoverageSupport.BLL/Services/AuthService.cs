@@ -59,21 +59,26 @@ namespace CommunicationCoverageSupport.BLL.Services
                 return null;
             }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+            var isAdmin = await IsAdminAsync(user.Id);
+            var isSuperAdmin = await IsSuperAdminAsync(user.Id);
 
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim("CompanyId", user.CompanyId.ToString()),
+                new Claim(ClaimTypes.Role, isSuperAdmin ? "SuperAdmin" : isAdmin ? "Admin" : "User")
+            };
+
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim("CompanyId", user.CompanyId.ToString())
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
+            var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return new LoginResponseDto
@@ -81,6 +86,21 @@ namespace CommunicationCoverageSupport.BLL.Services
                 Token = tokenHandler.WriteToken(token),
                 Expiration = tokenDescriptor.Expires.Value
             };
+        }
+
+        public async Task<bool> IsAdminAsync(int userId)
+        {
+            return await _context.ApplicationAdmins.AnyAsync(a => a.UserId == userId);
+        }
+
+        public async Task<bool> IsSuperAdminAsync(int userId)
+        {
+            var admin = await _context.ApplicationAdmins
+                .Include(a => a.User)
+                .ThenInclude(u => u.Company)
+                .FirstOrDefaultAsync(a => a.UserId == userId);
+
+            return admin?.User.Company.CompanyName == "SuperAdminCompany";
         }
     }
 }

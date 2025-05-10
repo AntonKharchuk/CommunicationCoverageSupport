@@ -13,6 +13,7 @@ namespace CommunicationCoverageSupport.DAL.Contexts
 
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Company> Companies { get; set; }
-        // Add other DbSets here later
+        public DbSet<ApplicationAdmin> ApplicationAdmins { get; set; }
+
     }
 }
