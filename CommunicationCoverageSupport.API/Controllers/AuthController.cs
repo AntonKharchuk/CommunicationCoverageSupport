@@ -1,7 +1,10 @@
 ﻿using CommunicationCoverageSupport.BLL.Services;
 using CommunicationCoverageSupport.Models.DTOs;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using System.Security.Claims;
 
 namespace CommunicationCoverageSupport.API.Controllers
 {
@@ -16,30 +19,27 @@ namespace CommunicationCoverageSupport.API.Controllers
             _authService = authService;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequestDto registerDto)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
         {
-            var result = await _authService.RegisterAsync(registerDto);
-
-            if (!result)
-            {
-                return BadRequest("User registration failed.");
-            }
-
-            return Ok("User registered successfully.");
+            var token = await _authService.LoginAsync(dto);
+            return token == null ? Unauthorized("Invalid credentials") : Ok(new { token });
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequestDto loginDto)
+        [HttpPost("register-user")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterRequestDto dto)
         {
-            var response = await _authService.LoginAsync(loginDto);
+            var result = await _authService.RegisterAsync(dto, false);
+            return result ? Ok("User registered") : BadRequest("Username taken");
+        }
 
-            if (response == null)
-            {
-                return Unauthorized("Invalid username or password.");
-            }
-
-            return Ok(response);
+        [HttpPost("register-admin")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterRequestDto dto)
+        {
+            var result = await _authService.RegisterAsync(dto, true);
+            return result ? Ok("Admin registered") : BadRequest("Username taken");
         }
     }
 }

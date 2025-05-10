@@ -12,7 +12,13 @@ namespace CommunicationCoverageSupport.DAL.Contexts
         }
 
         public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<ApplicationAdmin> ApplicationAdmins { get; set; }
+
         public DbSet<Company> Companies { get; set; }
-        // Add other DbSets here later
+
+        public DbSet<SimCard> SimCards { get; set; }
+        public DbSet<Artwork> Artworks { get; set; }
+        public DbSet<Acc> Accs { get; set; }
+
     }
 }

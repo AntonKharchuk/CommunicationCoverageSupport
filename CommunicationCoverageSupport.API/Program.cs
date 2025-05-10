@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CommunicationCoverageSupport.BLL.Services.SimCards;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,7 @@ builder.Services.AddAuthentication(options =>
 
 // Business services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ISimCardService, SimCardService>();
 
 builder.Services.AddControllers();
 

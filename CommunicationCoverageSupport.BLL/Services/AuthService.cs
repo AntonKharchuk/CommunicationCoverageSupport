@@ -1,86 +1,82 @@
-﻿using CommunicationCoverageSupport.Models.DTOs;
-using CommunicationCoverageSupport.DAL.Contexts;
+﻿using CommunicationCoverageSupport.DAL.Contexts;
+using CommunicationCoverageSupport.Models.DTOs;
 using CommunicationCoverageSupport.Models.Entities;
+
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 
 namespace CommunicationCoverageSupport.BLL.Services
 {
     public class AuthService : IAuthService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _config;
 
-        public AuthService(ApplicationDbContext context, IConfiguration configuration)
+        public AuthService(ApplicationDbContext context, IConfiguration config)
         {
             _context = context;
-            _configuration = configuration;
+            _config = config;
         }
 
-        public async Task<bool> RegisterAsync(RegisterRequestDto registerDto)
+        public async Task<string?> LoginAsync(LoginRequestDto dto)
         {
-            var company = await _context.Companies.FirstOrDefaultAsync(c => c.CompanyName == registerDto.CompanyName);
+            var user = await _context.Users.Include(u => u.Company).FirstOrDefaultAsync(u => u.Username == dto.Username);
+            if (user == null || user.PasswordHash != dto.Password) return null;
 
-            if (company == null)
+            var isAdmin = await _context.ApplicationAdmins.AnyAsync(a => a.UserId == user.Id);
+
+            var claims = new List<Claim>
             {
-                company = new Company
-                {
-                    CompanyName = registerDto.CompanyName
-                };
-                _context.Companies.Add(company);
-                await _context.SaveChangesAsync();
-            }
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, isAdmin ? "Admin" : "User")
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(6),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<bool> RegisterAsync(RegisterRequestDto dto, bool isAdmin)
+        {
+            if (await _context.Users.AnyAsync(u => u.Username == dto.Username)) return false;
 
             var user = new ApplicationUser
             {
-                Username = registerDto.Username,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
-                CompanyId = company.Id
+                Username = dto.Username,
+                PasswordHash = dto.Password,
+                Company = new Company { CompanyName = dto.CompanyName }
             };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
+            if (isAdmin)
+            {
+                _context.ApplicationAdmins.Add(new ApplicationAdmin { UserId = user.Id });
+                await _context.SaveChangesAsync();
+            }
+
             return true;
         }
 
-        public async Task<LoginResponseDto> LoginAsync(LoginRequestDto loginDto)
+        public async Task<bool> IsAdminAsync(int userId)
         {
-            var user = await _context.Users
-                .Include(u => u.Company)
-                .FirstOrDefaultAsync(u => u.Username == loginDto.Username);
-
-            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
-            {
-                return null;
-            }
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim("CompanyId", user.CompanyId.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return new LoginResponseDto
-            {
-                Token = tokenHandler.WriteToken(token),
-                Expiration = tokenDescriptor.Expires.Value
-            };
+            return await _context.ApplicationAdmins.AnyAsync(a => a.UserId == userId);
         }
     }
 }

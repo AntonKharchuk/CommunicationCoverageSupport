@@ -1,12 +1,11 @@
 ﻿using CommunicationCoverageSupport.Models.DTOs;
 
-using System.Threading.Tasks;
-
 namespace CommunicationCoverageSupport.BLL.Services
 {
     public interface IAuthService
     {
-        Task<bool> RegisterAsync(RegisterRequestDto registerDto);
-        Task<LoginResponseDto> LoginAsync(LoginRequestDto loginDto);
+        Task<string?> LoginAsync(LoginRequestDto dto);
+        Task<bool> RegisterAsync(RegisterRequestDto dto, bool isAdmin);
+        Task<bool> IsAdminAsync(int userId);
     }
 }
