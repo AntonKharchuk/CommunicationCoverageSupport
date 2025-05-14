@@ -39,12 +39,18 @@ var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
 
 // Business services
 builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddScoped<ISimCardRepository, SimCardRepository>();
 builder.Services.AddScoped<ISimCardService, SimCardService>();
+
 builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
 builder.Services.AddScoped<IArtworkService, ArtworkService>();
+
 builder.Services.AddScoped<IAccRepository, AccRepository>();
 builder.Services.AddScoped<IAccService, AccService>();
+
+builder.Services.AddScoped<IMsisdnRepository, MsisdnRepository>();
+builder.Services.AddScoped<IMsisdnService, MsisdnService>();
 
 
 
