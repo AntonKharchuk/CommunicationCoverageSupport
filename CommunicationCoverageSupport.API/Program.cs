@@ -43,6 +43,10 @@ builder.Services.AddScoped<ISimCardRepository, SimCardRepository>();
 builder.Services.AddScoped<ISimCardService, SimCardService>();
 builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
 builder.Services.AddScoped<IArtworkService, ArtworkService>();
+builder.Services.AddScoped<IAccRepository, AccRepository>();
+builder.Services.AddScoped<IAccService, AccService>();
+
+
 
 
 builder.Services.AddControllers();
