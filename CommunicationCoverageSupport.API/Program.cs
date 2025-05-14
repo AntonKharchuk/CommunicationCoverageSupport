@@ -1,3 +1,4 @@
+using CommunicationCoverageSupport.API.Controllers;
 using CommunicationCoverageSupport.BLL.Services;
 using CommunicationCoverageSupport.DAL.Repositories;
 
@@ -55,7 +56,8 @@ builder.Services.AddScoped<IMsisdnService, MsisdnService>();
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IOwnerService, OwnerService>();
 
-
+builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
+builder.Services.AddScoped<ISubscriberService, SubscriberService>();
 
 
 builder.Services.AddControllers();
