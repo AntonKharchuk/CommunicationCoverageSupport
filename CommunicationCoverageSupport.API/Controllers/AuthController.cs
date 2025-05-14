@@ -1,12 +1,12 @@
-﻿using CommunicationCoverageSupport.BLL.Services;
-using CommunicationCoverageSupport.Models.DTOs;
+﻿using CommunicationCoverageSupport.BLL.Services.Auth;
+using CommunicationCoverageSupport.Models.DTOs.Auth;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommunicationCoverageSupport.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -17,29 +17,23 @@ namespace CommunicationCoverageSupport.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequestDto registerDto)
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
         {
-            var result = await _authService.RegisterAsync(registerDto);
-
-            if (!result)
-            {
-                return BadRequest("User registration failed.");
-            }
+            var success = await _authService.RegisterAsync(dto);
+            if (!success)
+                return BadRequest("Registration failed. Username may already exist or role is invalid.");
 
             return Ok("User registered successfully.");
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequestDto loginDto)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
         {
-            var response = await _authService.LoginAsync(loginDto);
+            var token = await _authService.LoginAsync(dto);
+            if (token == null)
+                return Unauthorized("Invalid credentials.");
 
-            if (response == null)
-            {
-                return Unauthorized("Invalid username or password.");
-            }
-
-            return Ok(response);
+            return Ok(token);
         }
     }
 }
