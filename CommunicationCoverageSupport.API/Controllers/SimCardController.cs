@@ -32,6 +32,15 @@ namespace CommunicationCoverageSupport.API.Controllers
                 return NotFound();
             return Ok(card);
         }
+        [HttpGet("full-info/{iccid}")]
+        public async Task<IActionResult> GetFullInfo(string iccid)
+        {
+            var result = await _service.GetFullInfoByIccidAsync(iccid);
+            if (result == null)
+                return NotFound("SIM card not found.");
+
+            return Ok(result);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create(SimCardDto dto)

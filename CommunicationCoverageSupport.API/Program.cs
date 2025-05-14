@@ -59,6 +59,10 @@ builder.Services.AddScoped<IOwnerService, OwnerService>();
 builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
 builder.Services.AddScoped<ISubscriberService, SubscriberService>();
 
+builder.Services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
+builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
+
+
 
 builder.Services.AddControllers();
 

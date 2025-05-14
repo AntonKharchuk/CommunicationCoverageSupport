@@ -1,5 +1,6 @@
 ﻿using CommunicationCoverageSupport.DAL.Repositories;
 using CommunicationCoverageSupport.Models.DTOs;
+using CommunicationCoverageSupport.Models.DTOs.InfoDTOs;
 
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,10 @@ namespace CommunicationCoverageSupport.BLL.Services
         public Task<SimCardDto?> GetByIccidAsync(string iccid)
         {
             return _repository.GetByIccidAsync(iccid);
+        }
+        public Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid)
+        {
+            return _repository.GetFullInfoByIccidAsync(iccid);
         }
 
         public Task<bool> CreateAsync(SimCardDto simCard)
