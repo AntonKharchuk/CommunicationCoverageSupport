@@ -52,6 +52,9 @@ builder.Services.AddScoped<IAccService, AccService>();
 builder.Services.AddScoped<IMsisdnRepository, MsisdnRepository>();
 builder.Services.AddScoped<IMsisdnService, MsisdnService>();
 
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+builder.Services.AddScoped<IOwnerService, OwnerService>();
+
 
 
 
