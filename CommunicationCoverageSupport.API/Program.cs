@@ -1,4 +1,6 @@
 using CommunicationCoverageSupport.BLL.Services;
+using CommunicationCoverageSupport.DAL.Repositories;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -37,6 +39,9 @@ var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
 
 // Business services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ISimCardRepository, SimCardRepository>();
+builder.Services.AddScoped<ISimCardService, SimCardService>();
+
 
 builder.Services.AddControllers();
 
