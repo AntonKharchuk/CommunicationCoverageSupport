@@ -1,8 +1,11 @@
 CREATE Database sdb1;
-CREATE USER 'zpidvol'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
-GRANT ALL PRIVILEGES ON *.* TO 'zpidvol'@'localhost' WITH GRANT OPTION;
+CREATE USER 'hostmaster'@'localhost' IDENTIFIED WITH mysql_native_password;
+GRANT ALL PRIVILEGES ON *.* TO 'hostmaster'@'localhost' WITH GRANT OPTION;
+CREATE USER 'apiuser'@'%' IDENTIFIED BY '************';
+GRANT ALL PRIVILEGES ON sdb1.* TO 'apiuser'@'%';
 FLUSH PRIVILEGES;
-SHOW GRANTS FOR 'zpidvol'@'localhost';
+
+SHOW GRANTS FOR 'apiuser'@'%';
 
 use sdb1;
 CREATE TABLE artwork (
@@ -13,6 +16,11 @@ CREATE TABLE artwork (
 CREATE TABLE acc (
     id TINYINT PRIMARY KEY auto_increment,
     name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE owners (
+id bigint PRIMARY KEY NOT NULL,
+name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE sim_cards (
@@ -34,7 +42,6 @@ CREATE TABLE sim_cards (
     FOREIGN KEY (accId) REFERENCES acc(id),
     FOREIGN KEY (cardOwnerId) REFERENCES owners(id)
 );
-
 DELIMITER //
 CREATE TRIGGER sim_cards_chk_insert
 BEFORE INSERT ON sim_cards
@@ -59,16 +66,14 @@ END;
 DELIMITER ;
 
 CREATE TABLE msisdn (
-    msisdn VARCHAR(12) NOT NULL,
-    class tinyint NOT NULL,
+    msisdn VARCHAR(12) PRIMARY KEY NOT NULL,
+    class tinyint NOT NULL DEFAULT 0,
     prop2 BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE subscriber (
-    msisdn bigint NOT NULL,
-    imsi bigint NOT NULL,
-    FOREIGN KEY (msisdn) REFERENCES msisdn(msisdn),
-    FOREIGN KEY (imsi) REFERENCES sim_cards(imsi)
+    msisdn VARCHAR(12) NOT NULL,
+    imsi VARCHAR(15) NOT NULL
 );
 
 CREATE VIEW imsi_free AS
@@ -98,8 +103,3 @@ BEGIN
 END;
 //
 DELIMITER ;
-
-CREATE TABLE owners (
-  id bigint PRIMARY KEY NOT NULL,
-  name VARCHAR(255) NOT NULL
-);
