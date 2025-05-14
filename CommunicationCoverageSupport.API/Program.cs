@@ -41,6 +41,8 @@ var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISimCardRepository, SimCardRepository>();
 builder.Services.AddScoped<ISimCardService, SimCardService>();
+builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
+builder.Services.AddScoped<IArtworkService, ArtworkService>();
 
 
 builder.Services.AddControllers();
