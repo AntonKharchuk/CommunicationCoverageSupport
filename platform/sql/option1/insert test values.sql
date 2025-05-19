@@ -1,12 +1,14 @@
 mariadb -h <hostIp> -u apiuser -p sdb1 --ssl=0
 
 -- Insert test values into the artwork table
+INSERT INTO artwork (id,name) VALUES (0, 'NOT_USED');
 INSERT INTO artwork (name) VALUES
-('Artwork 1'),
+('NOT_USED'),
 ('Artwork 2'),
 ('Artwork 3');
 
 -- Insert test values into the acc table
+INSERT INTO acc (id,name) VALUES (0, 'NOT_USED');
 INSERT INTO acc (name) VALUES
 ('random'),
 ('random 15');

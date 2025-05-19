@@ -24,7 +24,7 @@ name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE sim_cards (
-    iccid VARCHAR(20) PRIMARY KEY NOT NULL,
+    iccid VARCHAR(20) NOT NULL,
     imsi VARCHAR(15) NOT NULL,
     artworkId tinyint NOT NULL,
     accId tinyint NOT NULL,
@@ -38,6 +38,7 @@ CREATE TABLE sim_cards (
     puk2 int NOT NULL,
     adm1 VARCHAR(255) NOT NULL,
 
+    PRIMARY KEY (iccid, imsi),
     FOREIGN KEY (artworkId) REFERENCES artwork(id),
     FOREIGN KEY (accId) REFERENCES acc(id),
     FOREIGN KEY (cardOwnerId) REFERENCES owners(id)
@@ -73,7 +74,8 @@ CREATE TABLE msisdn (
 
 CREATE TABLE subscriber (
     msisdn VARCHAR(12) NOT NULL,
-    imsi VARCHAR(15) NOT NULL
+    imsi VARCHAR(15) NOT NULL,
+    PRIMARY KEY (msisdn,imsi)
 );
 
 CREATE VIEW imsi_free AS

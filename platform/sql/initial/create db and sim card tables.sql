@@ -26,7 +26,7 @@ CREATE TABLE sim_cards (
     puk1 int NOT NULL,
 	puk2 int NOT NULL,
     adm1 bigint NOT NULL,
-    
+
     FOREIGN KEY (artworkId) REFERENCES artwork(id),
     FOREIGN KEY (accId) REFERENCES acc(id)
 );
@@ -53,3 +53,4 @@ BEGIN
 END;
 //
 DELIMITER ;
+
