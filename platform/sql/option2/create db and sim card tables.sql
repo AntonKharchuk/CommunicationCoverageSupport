@@ -1,4 +1,6 @@
-CREATE Database sdb1;
+-- Create database and some users
+-- BEGIN
+CREATE Database sdb2;
 CREATE USER 'hostmaster'@'localhost' IDENTIFIED WITH mysql_native_password;
 GRANT ALL PRIVILEGES ON *.* TO 'hostmaster'@'localhost' WITH GRANT OPTION;
 CREATE USER 'apiuser'@'%' IDENTIFIED BY '************';
@@ -6,8 +8,11 @@ GRANT ALL PRIVILEGES ON sdb1.* TO 'apiuser'@'%';
 FLUSH PRIVILEGES;
 
 SHOW GRANTS FOR 'apiuser'@'%';
+-- BEGIN
 
-use sdb1;
+
+use sdb2;
+
 
 CREATE TABLE artwork (
     id TINYINT PRIMARY KEY auto_increment,
@@ -24,21 +29,18 @@ id bigint PRIMARY KEY NOT NULL,
 name VARCHAR(255) NOT NULL
 );
 
-#---
-
 CREATE TABLE transportKey (
 id tinyint PRIMARY KEY NOT NULL,
 kInd VARCHAR(15) NOT NULL DEFAULT 'EMPTY'
 );
 
-#---
-
+-- Table for sim cards: ordered, ready to use, in use
 CREATE TABLE simCards (
-    iccid VARCHAR(20) UNIQUE NOT NULL,
-    imsi VARCHAR(15) UNIQUE NOT NULL,
-    msisdn VARCHAR(12) UNIQUE NOT NULL,
+    iccid CHAR(20) UNIQUE NOT NULL,
+    imsi CHAR(15) UNIQUE NOT NULL,
+    msisdn CHAR(12) UNIQUE NOT NULL,
     kIndId tinyint NOT NULL DEFAULT 0;
-    ki1 VARCHAR(255) NOT NULL,
+    ki1 CHAR(32) NOT NULL,
     pin1 smallint NOT NULL,
     pin2 smallint NOT NULL,
     puk1 int NOT NULL,
@@ -46,7 +48,7 @@ CREATE TABLE simCards (
     adm1 VARCHAR(255) NOT NULL,
     artworkId tinyint NOT NULL DEFAULT 0,
     accId tinyint NOT NULL DEFAULT 0,
-    installed BOOLEAN DEFAULT FALSE,
+    installed tinyint(1) DEFAULT 0,
     cardOwnerId bigint NOT NULL DEFAULT 0,
 
     PRIMARY KEY (iccid, imsi, kIndId, msisdn),
@@ -56,6 +58,7 @@ CREATE TABLE simCards (
     FOREIGN KEY (kIndId) REFERENCES transportKey(id)
 );
 
+-- Triggers for samCards table: forbid insert if card exists in simCardsDrain table
 DELIMITER //
 CREATE TRIGGER simCards_insert
 BEFORE INSERT ON simCards
@@ -74,14 +77,13 @@ END;
 //
 DELIMITER ;
 
-#---
-
+-- Table for drained sim cards
 CREATE TABLE simCardsDrain (
-    iccid VARCHAR(20) UNIQUE NOT NULL,
-    imsi VARCHAR(15) NOT NULL,
-    msisdn VARCHAR(12) NOT NULL,
+    iccid CHAR(20) UNIQUE NOT NULL,
+    imsi CHAR(15) NOT NULL,
+    msisdn CHAR(12) NOT NULL,
     kIndId tinyint NOT NULL DEFAULT 0;
-    ki1 VARCHAR(255) NOT NULL,
+    ki1 CHAR(32) NOT NULL,
     pin1 smallint NOT NULL,
     pin2 smallint NOT NULL,
     puk1 int NOT NULL,
@@ -89,7 +91,7 @@ CREATE TABLE simCardsDrain (
     adm1 VARCHAR(255) NOT NULL,
     artworkId tinyint NOT NULL DEFAULT 0,
     accId tinyint NOT NULL DEFAULT 0,
-    installed BOOLEAN COMMENT 'stores status at the create moment',
+    installed tinyint(1) COMMENT 'stores status at the create moment',
     cardOwnerId bigint NOT NULL DEFAULT 0,
     createTimestamp DATETIME,
 
@@ -100,6 +102,7 @@ CREATE TABLE simCardsDrain (
     FOREIGN KEY (kIndId) REFERENCES transportKey(id)
 );
 
+-- Trigger for simCardsDrain: on insert add timestamp
 DELIMITER //
 CREATE TRIGGER simCardsDrain_insert
 BEFORE INSERT ON simCardsDrain
@@ -110,15 +113,12 @@ END;
 //
 DELIMITER ;
 
-#TMP
-(iccid, imsi, msisdn, kIndId, ki1, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId)
-#--- procedures
+-- Procedure to move one sim card from simCards table to simCardsDrained. One sim card only can be moved in one call.
+DELIMITER //
 CREATE PROCEDURE drainOneSim(
-    IN p_id1 INT,          -- Перша частина ключа
-    IN p_id2 VARCHAR(50)   -- Друга частина ключа
-    _iccid VARCHAR(20),
-    _imsi VARCHAR(15),
-    _msisdn VARCHAR(12),
+    _iccid CHAR(20),
+    _imsi CHAR(15),
+    _msisdn CHAR(12),
     _kIndId tinyint DEFAULT 0
 )
 BEGIN
@@ -127,7 +127,7 @@ BEGIN
     DECLARE rows_deleted INT DEFAULT 0;
 
     START TRANSACTION;
-    -- Крок 1: Передперевірка кількості записів, які відповідають умовам
+    -- Precheck number of records
     SELECT COUNT(*) INTO rows_found FROM simCards WHERE iccid = _iccid
         AND imsi = _imsi AND msisdn = _msisdn
         AND (_kIndId IS NULL OR kIndId = _kIndId);
@@ -201,7 +201,6 @@ BEGIN
             END IF;
         END IF;
     END IF;
-
-END //
-
+END;
+//
 DELIMITER ;
