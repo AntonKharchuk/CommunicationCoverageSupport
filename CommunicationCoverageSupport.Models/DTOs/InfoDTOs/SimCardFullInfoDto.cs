@@ -12,6 +12,5 @@ namespace CommunicationCoverageSupport.Models.DTOs.InfoDTOs
         public ArtworkDto Artwork { get; set; } = new();
         public AccDto Acc { get; set; } = new();
         public OwnerDto Owner { get; set; } = new();
-        public MsisdnDto? Msisdn { get; set; }
     }
 }

@@ -54,14 +54,10 @@ builder.Services.AddScoped<IArtworkService, ArtworkService>();
 builder.Services.AddScoped<IAccRepository, AccRepository>();
 builder.Services.AddScoped<IAccService, AccService>();
 
-builder.Services.AddScoped<IMsisdnRepository, MsisdnRepository>();
-builder.Services.AddScoped<IMsisdnService, MsisdnService>();
 
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IOwnerService, OwnerService>();
 
-builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
-builder.Services.AddScoped<ISubscriberService, SubscriberService>();
 
 builder.Services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
 builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
