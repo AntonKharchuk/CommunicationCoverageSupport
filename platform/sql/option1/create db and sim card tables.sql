@@ -43,6 +43,7 @@ CREATE TABLE sim_cards (
     FOREIGN KEY (accId) REFERENCES acc(id),
     FOREIGN KEY (cardOwnerId) REFERENCES owners(id)
 );
+
 DELIMITER //
 CREATE TRIGGER sim_cards_chk_insert
 BEFORE INSERT ON sim_cards
@@ -54,6 +55,7 @@ BEGIN
 END;
 //
 DELIMITER ;
+
 DELIMITER //
 CREATE TRIGGER sim_cards_chk_update
 BEFORE UPDATE ON sim_cards
