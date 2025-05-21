@@ -1,4 +1,5 @@
-mariadb -h <hostIp> -u apiuser -p sdb1 --ssl=0
+mariadb -h <hostIp> -u apiuser -p sdb1 --ssl=0;
+
 
 -- Insert test values into the artwork table
 INSERT INTO artwork (name) VALUES

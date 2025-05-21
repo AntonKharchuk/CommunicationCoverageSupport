@@ -1,13 +1,13 @@
-﻿using CommunicationCoverageSupport.BLL.Services;
+﻿using CommunicationCoverageSupport.BLL.Services.SimCards;
 using CommunicationCoverageSupport.Models.DTOs;
+using CommunicationCoverageSupport.Models.DTOs.InfoDTOs;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommunicationCoverageSupport.API.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class SimCardController : ControllerBase
     {
         private readonly ISimCardService _service;
@@ -18,53 +18,52 @@ namespace CommunicationCoverageSupport.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<SimCardDto>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var cards = await _service.GetAllAsync();
-            return Ok(cards);
+            var result = await _service.GetAllAsync();
+            return Ok(result);
         }
 
         [HttpGet("{iccid}")]
-        public async Task<ActionResult<SimCardDto>> GetByIccid(string iccid)
+        public async Task<IActionResult> GetByIccid(string iccid)
         {
-            var card = await _service.GetByIccidAsync(iccid);
-            if (card == null)
-                return NotFound();
-            return Ok(card);
+            var result = await _service.GetByIccidAsync(iccid);
+            return result != null ? Ok(result) : NotFound();
         }
-        [HttpGet("full-info/{iccid}")]
-        public async Task<IActionResult> GetFullInfo(string iccid)
+
+        [HttpGet("full/{iccid}")]
+        public async Task<IActionResult> GetFullInfoByIccid(string iccid)
         {
             var result = await _service.GetFullInfoByIccidAsync(iccid);
-            if (result == null)
-                return NotFound("SIM card not found.");
-
-            return Ok(result);
+            return result != null ? Ok(result) : NotFound();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(SimCardDto dto)
         {
-            var success = await _service.CreateAsync(dto);
-            if (!success) return BadRequest("Creation failed.");
-            return Ok("Sim card created.");
+            var created = await _service.CreateAsync(dto);
+            return created ? Ok("Sim card created.") : BadRequest("Failed to create sim card.");
         }
 
-        [HttpPut("{iccid}")]
-        public async Task<IActionResult> Update(string iccid, SimCardDto dto)
+        [HttpPut]
+        public async Task<IActionResult> Update(SimCardDto dto)
         {
-            if (iccid != dto.Iccid) return BadRequest("ICCID mismatch.");
-            var success = await _service.UpdateAsync(dto);
-            if (!success) return NotFound("Sim card not found.");
-            return Ok("Sim card updated.");
+            var updated = await _service.UpdateAsync(dto);
+            return updated ? Ok("Sim card updated.") : NotFound();
         }
 
-        [HttpDelete("{iccid}")]
-        public async Task<IActionResult> Delete(string iccid)
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromQuery] string iccid, [FromQuery] string imsi, [FromQuery] string msisdn, [FromQuery] byte kIndId)
         {
-            var success = await _service.DeleteAsync(iccid);
-            if (!success) return NotFound("Sim card not found.");
-            return Ok("Sim card deleted.");
+            var deleted = await _service.DeleteAsync(iccid, imsi, msisdn, kIndId);
+            return deleted ? Ok("Sim card deleted.") : NotFound();
+        }
+
+        [HttpPost("drain")]
+        public async Task<IActionResult> Drain([FromQuery] string iccid, [FromQuery] string imsi, [FromQuery] string msisdn, [FromQuery] byte kIndId)
+        {
+            var message = await _service.DrainAsync(iccid, imsi, msisdn, kIndId);
+            return Ok(message);
         }
     }
 }

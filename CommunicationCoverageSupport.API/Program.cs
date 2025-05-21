@@ -1,8 +1,12 @@
 using CommunicationCoverageSupport.API.Controllers;
 using CommunicationCoverageSupport.BLL.Services;
 using CommunicationCoverageSupport.BLL.Services.Auth;
+using CommunicationCoverageSupport.BLL.Services.SimCards;
+using CommunicationCoverageSupport.BLL.Services.TransportKeys;
 using CommunicationCoverageSupport.DAL.Repositories;
 using CommunicationCoverageSupport.DAL.Repositories.Auth;
+using CommunicationCoverageSupport.DAL.Repositories.SimCards;
+using CommunicationCoverageSupport.DAL.Repositories.TransportKeys;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -48,20 +52,18 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISimCardRepository, SimCardRepository>();
 builder.Services.AddScoped<ISimCardService, SimCardService>();
 
+
 builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
 builder.Services.AddScoped<IArtworkService, ArtworkService>();
 
 builder.Services.AddScoped<IAccRepository, AccRepository>();
 builder.Services.AddScoped<IAccService, AccService>();
 
+builder.Services.AddScoped<ITransportKeyRepository, TransportKeyRepository>();
+builder.Services.AddScoped<ITransportKeyService, TransportKeyService>();
 
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IOwnerService, OwnerService>();
-
-
-builder.Services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
-builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
-
 
 
 builder.Services.AddControllers();

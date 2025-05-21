@@ -1,5 +1,5 @@
 -- Create database and some users
--- BEGIN
+BEGIN
 CREATE Database sdb2;
 CREATE USER 'hostmaster'@'localhost' IDENTIFIED WITH mysql_native_password;
 GRANT ALL PRIVILEGES ON *.* TO 'hostmaster'@'localhost' WITH GRANT OPTION;

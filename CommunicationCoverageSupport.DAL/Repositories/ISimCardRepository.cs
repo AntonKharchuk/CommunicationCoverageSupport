@@ -11,11 +11,12 @@ namespace CommunicationCoverageSupport.DAL.Repositories
 {
     public interface ISimCardRepository
     {
-        Task<List<SimCardDto>> GetAllAsync();
+        Task<IEnumerable<SimCardDto>> GetAllAsync();
         Task<SimCardDto?> GetByIccidAsync(string iccid);
         Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid);
         Task<bool> CreateAsync(SimCardDto simCard);
         Task<bool> UpdateAsync(SimCardDto simCard);
-        Task<bool> DeleteAsync(string iccid);
+        Task<bool> DeleteAsync(string iccid, string imsi, string msisdn, byte kIndId);
+        Task<string> DrainAsync(string iccid, string imsi, string msisdn, byte kIndId);
     }
 }

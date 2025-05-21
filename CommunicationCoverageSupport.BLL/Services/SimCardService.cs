@@ -1,14 +1,9 @@
 ﻿using CommunicationCoverageSupport.DAL.Repositories;
+using CommunicationCoverageSupport.DAL.Repositories.SimCards;
 using CommunicationCoverageSupport.Models.DTOs;
 using CommunicationCoverageSupport.Models.DTOs.InfoDTOs;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CommunicationCoverageSupport.BLL.Services
+namespace CommunicationCoverageSupport.BLL.Services.SimCards
 {
     public class SimCardService : ISimCardService
     {
@@ -19,33 +14,12 @@ namespace CommunicationCoverageSupport.BLL.Services
             _repository = repository;
         }
 
-        public Task<List<SimCardDto>> GetAllAsync()
-        {
-            return _repository.GetAllAsync();
-        }
-
-        public Task<SimCardDto?> GetByIccidAsync(string iccid)
-        {
-            return _repository.GetByIccidAsync(iccid);
-        }
-        public Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid)
-        {
-            return _repository.GetFullInfoByIccidAsync(iccid);
-        }
-
-        public Task<bool> CreateAsync(SimCardDto simCard)
-        {
-            return _repository.CreateAsync(simCard);
-        }
-
-        public Task<bool> UpdateAsync(SimCardDto simCard)
-        {
-            return _repository.UpdateAsync(simCard);
-        }
-
-        public Task<bool> DeleteAsync(string iccid)
-        {
-            return _repository.DeleteAsync(iccid);
-        }
+        public Task<IEnumerable<SimCardDto>> GetAllAsync() => _repository.GetAllAsync();
+        public Task<SimCardDto?> GetByIccidAsync(string iccid) => _repository.GetByIccidAsync(iccid);
+        public Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid) => _repository.GetFullInfoByIccidAsync(iccid);
+        public Task<bool> CreateAsync(SimCardDto dto) => _repository.CreateAsync(dto);
+        public Task<bool> UpdateAsync(SimCardDto dto) => _repository.UpdateAsync(dto);
+        public Task<bool> DeleteAsync(string iccid, string imsi, string msisdn, byte kIndId) => _repository.DeleteAsync(iccid, imsi, msisdn, kIndId);
+        public Task<string> DrainAsync(string iccid, string imsi, string msisdn, byte kIndId) => _repository.DrainAsync(iccid, imsi, msisdn, kIndId);
     }
 }
