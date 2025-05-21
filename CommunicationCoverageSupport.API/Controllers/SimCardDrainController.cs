@@ -1,5 +1,6 @@
 ﻿using CommunicationCoverageSupport.BLL.Services;
 using CommunicationCoverageSupport.BLL.Services.SimCards;
+using CommunicationCoverageSupport.Models.DTOs;
 using CommunicationCoverageSupport.Models.DTOs.InfoDTOs;
 
 using Microsoft.AspNetCore.Mvc;
@@ -39,9 +40,10 @@ namespace CommunicationCoverageSupport.API.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] string iccid, [FromQuery] string imsi, [FromQuery] string msisdn, [FromQuery] byte kIndId)
+        public async Task<IActionResult> Delete(SimCardPrimaryKeyDto simCardPrimaryKeyDto)
         {
-            var result = await _service.DeleteAsync(iccid, imsi, msisdn, kIndId);
+            var result = await _service.DeleteAsync(simCardPrimaryKeyDto.Iccid, simCardPrimaryKeyDto.Imsi, 
+                simCardPrimaryKeyDto.Msisdn, simCardPrimaryKeyDto.KIndId);
             return result ? Ok("Deleted.") : NotFound();
         }
     }

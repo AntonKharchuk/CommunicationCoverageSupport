@@ -53,9 +53,10 @@ namespace CommunicationCoverageSupport.API.Controllers
         }
 
         [HttpPost("drain")]
-        public async Task<IActionResult> Drain([FromQuery] string iccid, [FromQuery] string imsi, [FromQuery] string msisdn, [FromQuery] byte kIndId)
+        public async Task<IActionResult> Drain(SimCardPrimaryKeyDto simCardPrimaryKeyDto)
         {
-            var message = await _service.DrainAsync(iccid, imsi, msisdn, kIndId);
+            var message = await _service.DrainAsync(simCardPrimaryKeyDto.Iccid, simCardPrimaryKeyDto.Imsi,
+                simCardPrimaryKeyDto.Msisdn, simCardPrimaryKeyDto.KIndId);
             return Ok(message);
         }
     }
