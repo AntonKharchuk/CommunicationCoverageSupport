@@ -65,6 +65,9 @@ builder.Services.AddScoped<ITransportKeyService, TransportKeyService>();
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IOwnerService, OwnerService>();
 
+builder.Services.AddScoped<ISimCardDrainRepository, SimCardDrainRepository>();
+builder.Services.AddScoped<ISimCardDrainService, SimCardDrainService>();
+
 
 builder.Services.AddControllers();
 
