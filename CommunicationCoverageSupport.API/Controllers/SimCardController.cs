@@ -52,13 +52,6 @@ namespace CommunicationCoverageSupport.API.Controllers
             return updated ? Ok("Sim card updated.") : NotFound();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] string iccid, [FromQuery] string imsi, [FromQuery] string msisdn, [FromQuery] byte kIndId)
-        {
-            var deleted = await _service.DeleteAsync(iccid, imsi, msisdn, kIndId);
-            return deleted ? Ok("Sim card deleted.") : NotFound();
-        }
-
         [HttpPost("drain")]
         public async Task<IActionResult> Drain([FromQuery] string iccid, [FromQuery] string imsi, [FromQuery] string msisdn, [FromQuery] byte kIndId)
         {

@@ -121,22 +121,6 @@ WHERE iccid = @iccid AND imsi = @imsi AND msisdn = @msisdn AND kIndId = @kIndId"
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
-        public async Task<bool> DeleteAsync(string iccid, string imsi, string msisdn, byte kIndId)
-        {
-            const string query = "DELETE FROM simCards WHERE iccid = @iccid AND imsi = @imsi AND msisdn = @msisdn AND kIndId = @kIndId";
-
-            await using var conn = new MySqlConnection(_connectionString);
-            await conn.OpenAsync();
-            await using var cmd = new MySqlCommand(query, conn);
-
-            cmd.Parameters.AddWithValue("@iccid", iccid);
-            cmd.Parameters.AddWithValue("@imsi", imsi);
-            cmd.Parameters.AddWithValue("@msisdn", msisdn);
-            cmd.Parameters.AddWithValue("@kIndId", kIndId);
-
-            return await cmd.ExecuteNonQueryAsync() > 0;
-        }
-
         public async Task<string> DrainAsync(string iccid, string imsi, string msisdn, byte kIndId)
         {
             const string query = "CALL drainOneSim(@iccid, @imsi, @msisdn, @kIndId)";
