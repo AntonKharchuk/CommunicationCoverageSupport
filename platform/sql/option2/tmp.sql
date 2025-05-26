@@ -32,9 +32,9 @@ BEGIN
             '\nMultiple move is forbidder for this procedure. ROLLBACK');
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = _message_text;
     ELSE rows_found = 1 THEN
-        INSERT INTO simCardsDrain (iccid, imsi, msisdn, kIndId, ki1, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId)
+        INSERT INTO simCardsDrain (iccid, imsi, msisdn, kIndId, ki, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId)
         SELECT
-            iccid, imsi, msisdn, kIndId, ki1, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId
+            iccid, imsi, msisdn, kIndId, ki, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId
         FROM
             simCards
         WHERE
