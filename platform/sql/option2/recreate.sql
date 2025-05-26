@@ -1,39 +1,15 @@
--- Create database and some users
-BEGIN
+SET FOREIGN_KEY_CHECKS = 0;
+USE sdb2;
 
-CREATE Database sdb2;
-CREATE USER 'hostmaster'@'localhost' IDENTIFIED WITH mysql_native_password;
-GRANT ALL PRIVILEGES ON *.* TO 'hostmaster'@'localhost' WITH GRANT OPTION;
-CREATE USER 'apiuser'@'%' IDENTIFIED BY '***********';
-GRANT ALL PRIVILEGES ON sdb1.* TO 'apiuser'@'%';
-GRANT ALL PRIVILEGES ON sdb2.* TO 'apiuser'@'%';
-FLUSH PRIVILEGES;
-
-SHOW GRANTS FOR 'apiuser'@'%';
-
-use sdb2;
-
-CREATE TABLE artwork (
-    id TINYINT PRIMARY KEY auto_increment,
-    name VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE acc (
-    id TINYINT PRIMARY KEY auto_increment,
-    name VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE owners (
-id bigint PRIMARY KEY NOT NULL,
-name VARCHAR(255) NOT NULL
-);
+DROP TABLE IF EXISTS `simCards`;
+DROP TABLE IF EXISTS `simCardsDrain`;
+DROP TABLE IF EXISTS `transportKey`;
 
 CREATE TABLE transportKey (
 id SMALLINT UNSIGNED PRIMARY KEY NOT NULL,
 kInd VARCHAR(255) NOT NULL DEFAULT 'EMPTY'
 );
 
--- Table for sim cards: ordered, ready to use, in use
 CREATE TABLE simCards (
     iccid CHAR(20) UNIQUE NOT NULL,
     imsi CHAR(15) UNIQUE NOT NULL,
@@ -112,7 +88,9 @@ END;
 //
 DELIMITER ;
 
--- Procedure to move one sim card from simCards table to simCardsDrained. One sim card only can be moved in one call.
+-- Procedure recreate
+DROP PROCEDURE IF EXISTS drainOneSim;
+
 DELIMITER //
 CREATE PROCEDURE drainOneSim(
     IN _iccid CHAR(20),
@@ -200,3 +178,7 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+USE information_schema;
+SET FOREIGN_KEY_CHECKS = 1;
+
