@@ -1,5 +1,6 @@
 -- Create database and some users
 BEGIN
+
 CREATE Database sdb2;
 CREATE USER 'hostmaster'@'localhost' IDENTIFIED WITH mysql_native_password;
 GRANT ALL PRIVILEGES ON *.* TO 'hostmaster'@'localhost' WITH GRANT OPTION;
@@ -27,7 +28,7 @@ name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE transportKey (
-id tinyint PRIMARY KEY NOT NULL,
+id int PRIMARY KEY NOT NULL,
 kInd VARCHAR(15) NOT NULL DEFAULT 'EMPTY'
 );
 
@@ -36,8 +37,8 @@ CREATE TABLE simCards (
     iccid CHAR(20) UNIQUE NOT NULL,
     imsi CHAR(15) UNIQUE NOT NULL,
     msisdn CHAR(12) UNIQUE NOT NULL,
-    kIndId tinyint NOT NULL DEFAULT 0,
-    ki1 CHAR(32) NOT NULL,
+    kIndId int NOT NULL DEFAULT 0,
+    ki CHAR(32) NOT NULL,
     pin1 smallint NOT NULL,
     pin2 smallint NOT NULL,
     puk1 int NOT NULL,
@@ -79,8 +80,8 @@ CREATE TABLE simCardsDrain (
     iccid CHAR(20) UNIQUE NOT NULL,
     imsi CHAR(15) NOT NULL,
     msisdn CHAR(12) NOT NULL,
-    kIndId tinyint NOT NULL DEFAULT 0,
-    ki1 CHAR(32) NOT NULL,
+    kIndId int NOT NULL DEFAULT 0,
+    ki CHAR(32) NOT NULL,
     pin1 smallint NOT NULL,
     pin2 smallint NOT NULL,
     puk1 int NOT NULL,
@@ -116,7 +117,7 @@ CREATE PROCEDURE drainOneSim(
     IN _iccid CHAR(20),
     IN _imsi CHAR(15),
     IN _msisdn CHAR(12),
-    IN _kIndId tinyint
+    IN _kIndId int
 )
 BEGIN
     DECLARE rows_found INT DEFAULT 0 ;
@@ -152,9 +153,9 @@ BEGIN
             '\nMultiple move is forbidder for this procedure. ROLLBACK');
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = _message_text;
     ELSE -- last variant when rows_found == 1
-        INSERT INTO simCardsDrain (iccid, imsi, msisdn, kIndId, ki1, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId)
+        INSERT INTO simCardsDrain (iccid, imsi, msisdn, kIndId, ki, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId)
         SELECT
-            iccid, imsi, msisdn, kIndId, ki1, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId
+            iccid, imsi, msisdn, kIndId, ki, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId
         FROM
             simCards
         WHERE
