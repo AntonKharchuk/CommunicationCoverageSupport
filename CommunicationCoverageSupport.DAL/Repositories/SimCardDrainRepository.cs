@@ -33,8 +33,8 @@ namespace CommunicationCoverageSupport.DAL.Repositories
                     Iccid = reader.GetString("iccid"),
                     Imsi = reader.GetString("imsi"),
                     Msisdn = reader.GetString("msisdn"),
-                    KIndId = reader.GetByte("kIndId"),
-                    Ki1 = reader.GetString("ki1"),
+                    KIndId = reader.GetInt32("kIndId"),
+                    Ki = reader.GetString("ki"),
                     Pin1 = reader.GetInt16("pin1"),
                     Pin2 = reader.GetInt16("pin2"),
                     Puk1 = reader.GetInt32("puk1"),
@@ -68,8 +68,8 @@ namespace CommunicationCoverageSupport.DAL.Repositories
                     Iccid = reader.GetString("iccid"),
                     Imsi = reader.GetString("imsi"),
                     Msisdn = reader.GetString("msisdn"),
-                    KIndId = reader.GetByte("kIndId"),
-                    Ki1 = reader.GetString("ki1"),
+                    KIndId = reader.GetInt32("kIndId"),
+                    Ki = reader.GetString("ki"),
                     Pin1 = reader.GetInt16("pin1"),
                     Pin2 = reader.GetInt16("pin2"),
                     Puk1 = reader.GetInt32("puk1"),
@@ -116,8 +116,8 @@ namespace CommunicationCoverageSupport.DAL.Repositories
                     Iccid = reader.GetString("iccid"),
                     Imsi = reader.GetString("imsi"),
                     Msisdn = reader.GetString("msisdn"),
-                    KIndId = reader.GetByte("kIndId"),
-                    Ki1 = reader.GetString("ki1"),
+                    KIndId = reader.GetInt32("kIndId"),
+                    Ki = reader.GetString("ki"),
                     Pin1 = reader.GetInt16("pin1"),
                     Pin2 = reader.GetInt16("pin2"),
                     Puk1 = reader.GetInt32("puk1"),
@@ -155,7 +155,7 @@ namespace CommunicationCoverageSupport.DAL.Repositories
         }
 
 
-        public async Task<bool> DeleteAsync(string iccid, string imsi, string msisdn, byte kIndId)
+        public async Task<bool> DeleteAsync(string iccid, string imsi, string msisdn, int kIndId)
         {
             const string query = @"
                 DELETE FROM simCardsDrain 

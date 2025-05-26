@@ -16,6 +16,6 @@ namespace CommunicationCoverageSupport.DAL.Repositories
         Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid);
         Task<bool> CreateAsync(SimCardDto simCard);
         Task<bool> UpdateAsync(SimCardDto simCard);
-        Task<string> DrainAsync(string iccid, string imsi, string msisdn, byte kIndId);
+        Task<string> DrainAsync(string iccid, string imsi, string msisdn, int kIndId);
     }
 }

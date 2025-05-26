@@ -77,8 +77,8 @@ WHERE s.iccid = @iccid";
         public async Task<bool> CreateAsync(SimCardDto dto)
         {
             const string query = @"
-INSERT INTO simCards (iccid, imsi, msisdn, kIndId, ki1, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId)
-VALUES (@iccid, @imsi, @msisdn, @kIndId, @ki1, @pin1, @pin2, @puk1, @puk2, @adm1, @artworkId, @accId, @installed, @cardOwnerId)";
+INSERT INTO simCards (iccid, imsi, msisdn, kIndId, ki, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId)
+VALUES (@iccid, @imsi, @msisdn, @kIndId, @ki, @pin1, @pin2, @puk1, @puk2, @adm1, @artworkId, @accId, @installed, @cardOwnerId)";
 
             await using var conn = new MySqlConnection(_connectionString);
             await conn.OpenAsync();
@@ -101,7 +101,7 @@ VALUES (@iccid, @imsi, @msisdn, @kIndId, @ki1, @pin1, @pin2, @puk1, @puk2, @adm1
             const string query = @"
 UPDATE simCards SET
     kIndId = @kIndId,
-    ki1 = @ki1,
+    ki = @ki,
     pin1 = @pin1,
     pin2 = @pin2,
     puk1 = @puk1,
@@ -121,7 +121,7 @@ WHERE iccid = @iccid AND imsi = @imsi AND msisdn = @msisdn AND kIndId = @kIndId"
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
-        public async Task<string> DrainAsync(string iccid, string imsi, string msisdn, byte kIndId)
+        public async Task<string> DrainAsync(string iccid, string imsi, string msisdn, int kIndId)
         {
             const string query = "CALL drainOneSim(@iccid, @imsi, @msisdn, @kIndId)";
 
@@ -150,8 +150,8 @@ WHERE iccid = @iccid AND imsi = @imsi AND msisdn = @msisdn AND kIndId = @kIndId"
             Iccid = reader.GetString("iccid"),
             Imsi = reader.GetString("imsi"),
             Msisdn = reader.GetString("msisdn"),
-            KIndId = reader.GetByte("kIndId"),
-            Ki1 = reader.GetString("ki1"),
+            KIndId = reader.GetInt32("kIndId"),
+            Ki = reader.GetString("ki"),
             Pin1 = reader.GetInt16("pin1"),
             Pin2 = reader.GetInt16("pin2"),
             Puk1 = reader.GetInt32("puk1"),
@@ -169,7 +169,7 @@ WHERE iccid = @iccid AND imsi = @imsi AND msisdn = @msisdn AND kIndId = @kIndId"
             cmd.Parameters.AddWithValue("@imsi", dto.Imsi);
             cmd.Parameters.AddWithValue("@msisdn", dto.Msisdn);
             cmd.Parameters.AddWithValue("@kIndId", dto.KIndId);
-            cmd.Parameters.AddWithValue("@ki1", dto.Ki1);
+            cmd.Parameters.AddWithValue("@ki", dto.Ki);
             cmd.Parameters.AddWithValue("@pin1", dto.Pin1);
             cmd.Parameters.AddWithValue("@pin2", dto.Pin2);
             cmd.Parameters.AddWithValue("@puk1", dto.Puk1);

@@ -12,7 +12,7 @@ namespace CommunicationCoverageSupport.DAL.Repositories
     {
         Task<IEnumerable<SimCardDrainDto>> GetAllAsync();
         Task<SimCardDrainDto?> GetByIccidAsync(string iccid);
-        Task<bool> DeleteAsync(string iccid, string imsi, string msisdn, byte kIndId);
+        Task<bool> DeleteAsync(string iccid, string imsi, string msisdn, int kIndId);
         Task<SimCardDrainFullInfoDto?> GetFullInfoByIccidAsync(string iccid);
     }
 }

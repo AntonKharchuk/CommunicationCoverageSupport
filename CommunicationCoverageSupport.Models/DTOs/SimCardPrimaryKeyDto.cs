@@ -11,6 +11,6 @@ namespace CommunicationCoverageSupport.Models.DTOs
         public string Iccid { get; set; } = null!;
         public string Imsi { get; set; } = null!;
         public string Msisdn { get; set; } = null!;
-        public byte KIndId { get; set; }
+        public int KIndId { get; set; }
     }
 }

@@ -19,6 +19,6 @@ namespace CommunicationCoverageSupport.BLL.Services.SimCards
         public Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid) => _repository.GetFullInfoByIccidAsync(iccid);
         public Task<bool> CreateAsync(SimCardDto dto) => _repository.CreateAsync(dto);
         public Task<bool> UpdateAsync(SimCardDto dto) => _repository.UpdateAsync(dto);
-        public Task<string> DrainAsync(string iccid, string imsi, string msisdn, byte kIndId) => _repository.DrainAsync(iccid, imsi, msisdn, kIndId);
+        public Task<string> DrainAsync(string iccid, string imsi, string msisdn, int kIndId) => _repository.DrainAsync(iccid, imsi, msisdn, kIndId);
     }
 }
