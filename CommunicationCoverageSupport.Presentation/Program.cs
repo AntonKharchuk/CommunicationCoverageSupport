@@ -1,29 +1,35 @@
+using CommunicationCoverageSupport.Presentation.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddSession();
+// Bind configuration
+builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
+
+// Register HttpClient with base address from config
+builder.Services.AddHttpClient("ApiClient", (sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var baseUrl = config.GetSection("ApiSettings:BaseUrl").Value;
+    client.BaseAddress = new Uri(baseUrl!);
+});
+
 builder.Services.AddRazorPages();
+builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.UseSession();
-
 app.MapRazorPages();
-
 app.Run();

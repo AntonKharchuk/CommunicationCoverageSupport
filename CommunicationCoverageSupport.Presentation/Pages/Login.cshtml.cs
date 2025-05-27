@@ -1,58 +1,61 @@
+using CommunicationCoverageSupport.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace CommunicationCoverageSupport.Presentation.Pages
 {
     public class LoginModel : PageModel
     {
-        [BindProperty] public string Username { get; set; }
-        [BindProperty] public string Password { get; set; }
-        public string Message { get; set; }
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<LoginModel> _logger;
+
+        public LoginModel(IHttpClientFactory httpClientFactory, ILogger<LoginModel> logger)
+        {
+            _httpClientFactory = httpClientFactory;
+            _logger = logger;
+        }
+
+
+        [BindProperty]
+        public LoginRequestDto LoginRequest { get; set; } = new();
+
+        public string? ErrorMessage { get; set; }
+
+        public void OnGet() { }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            using var client = new HttpClient();
+            if (!ModelState.IsValid)
+                return Page();
 
-            var loginPayload = new
-            {
-                username = Username,
-                password = Password
-            };
-
-            var json = JsonSerializer.Serialize(loginPayload);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var content = new StringContent(JsonSerializer.Serialize(LoginRequest), Encoding.UTF8, "application/json");
 
             try
             {
-                var response = await client.PostAsync("http://localhost:5062/api/auth/login", content);
+                var response = await client.PostAsync("/api/Auth/login", content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseBody = await response.Content.ReadAsStringAsync();
-                    using var doc = JsonDocument.Parse(responseBody);
-                    var token = doc.RootElement.GetProperty("token").GetString();
-
-                    // Store JWT in session or cookie
+                    var token = await response.Content.ReadAsStringAsync();
                     HttpContext.Session.SetString("JwtToken", token);
-
                     return RedirectToPage("/Index");
                 }
                 else
                 {
-                    Message = "Login failed: " + await response.Content.ReadAsStringAsync();
+                    ErrorMessage = "Invalid username or password.";
+                    return Page();
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                Message = "Could not connect to the server.";
+                _logger.LogError(ex, "Login failed.");
+                ErrorMessage = "An error occurred while trying to log in.";
+                return Page();
             }
-
-            return Page();
         }
     }
 }

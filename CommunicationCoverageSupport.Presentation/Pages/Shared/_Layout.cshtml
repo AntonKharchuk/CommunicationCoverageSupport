@@ -29,11 +29,11 @@
                         var token = HttpContextAccessor.HttpContext?.Session.GetString("JwtToken");
                     }
 
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav ms-auto">
                         @if (!string.IsNullOrEmpty(token))
                         {
                             <li class="nav-item">
-                                <a class="btn btn-danger" asp-page="/Logout">Logout</a>
+                                <a class="btn btn-danger ms-2" asp-page="/Logout">Logout</a>
                             </li>
                         }
                         else
@@ -46,6 +46,7 @@
                             </li>
                         }
                     </ul>
+
                 </div>
 
             </div>

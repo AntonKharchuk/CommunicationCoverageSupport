@@ -1,52 +1,58 @@
+using CommunicationCoverageSupport.Models.DTOs.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
-using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace CommunicationCoverageSupport.Presentation.Pages
 {
     public class RegisterModel : PageModel
     {
-        [BindProperty] public string Username { get; set; }
-        [BindProperty] public string Password { get; set; }
-        [BindProperty] public string CompanyName { get; set; }
-        public string Message { get; set; }
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<RegisterModel> _logger;
+
+        public RegisterModel(IHttpClientFactory httpClientFactory, ILogger<RegisterModel> logger)
+        {
+            _httpClientFactory = httpClientFactory;
+            _logger = logger;
+        }
+
+        [BindProperty]
+        public UserRegisterDto RegisterRequest { get; set; } = new();
+
+        public string? ErrorMessage { get; set; }
+
+        public void OnGet() { }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            using var client = new HttpClient();
-            var registerPayload = new
-            {
-                username = Username,
-                password = Password,
-                companyName = CompanyName
-            };
+            if (!ModelState.IsValid)
+                return Page();
 
-            var json = JsonSerializer.Serialize(registerPayload);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var content = new StringContent(JsonSerializer.Serialize(RegisterRequest), Encoding.UTF8, "application/json");
 
             try
             {
-                var response = await client.PostAsync("http://localhost:5062/api/auth/register", content);
+                var response = await client.PostAsync("/api/Auth/register", content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    Message = "Registration successful! You can now log in.";
+                    return RedirectToPage("/Login");
                 }
                 else
                 {
-                    Message = "Registration failed: " + await response.Content.ReadAsStringAsync();
+                    ErrorMessage = "Registration failed. Please try again.";
+                    return Page();
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                Message = "Could not connect to the server.";
+                _logger.LogError(ex, "Registration failed.");
+                ErrorMessage = "An error occurred while trying to register.";
+                return Page();
             }
-
-            return Page();
         }
     }
 }

@@ -4,23 +4,28 @@
     ViewData["Title"] = "Login";
 }
 
-<div class="container mt-5">
-    <h2>Login</h2>
+<h2 class="mb-4">Login</h2>
 
-    @if (!string.IsNullOrEmpty(Model.Message))
-    {
-        <div class="alert alert-danger">@Model.Message</div>
-    }
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
 
-    <form method="post">
-        <div class="mb-3">
-            <label class="form-label">Username</label>
-            <input asp-for="Username" class="form-control" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input asp-for="Password" type="password" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-</div>
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="LoginRequest.Username" class="form-label"></label>
+        <input asp-for="LoginRequest.Username" class="form-control" />
+        <span asp-validation-for="LoginRequest.Username" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="LoginRequest.Password" class="form-label"></label>
+        <input asp-for="LoginRequest.Password" type="password" class="form-control" />
+        <span asp-validation-for="LoginRequest.Password" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
