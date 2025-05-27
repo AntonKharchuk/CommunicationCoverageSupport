@@ -1,4 +1,4 @@
-insert into simCards (iccid, imsi, msisdn, kIndId, ki1, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId) VALUES
+insert into simCards (iccid, imsi, msisdn, kIndId, ki, pin1, pin2, puk1, puk2, adm1, artworkId, accId, installed, cardOwnerId) VALUES
 ('54321255702000000000', '255702000000000', '380702800000', 8, '7411e148149d333296284c87a9565c9a', 9871, 7126, 1075246, 1116256, 'noBodyKnowsWhatIsIt', 0, 0, 0, 0),
 ('54321255702000000001', '255702000000001', '380702800001', 8, '4fef07b8f65a53970075403df8c502fa', 8597, 5232, 2621454, 6337932, 'noBodyKnowsWhatIsIt', 0, 0, 0, 0),
 ('54321255702000000002', '255702000000002', '380702800002', 8, '1166475bb5c5055dab9943c686fa1bfa', 4114, 6992, 639898, 814300, 'noBodyKnowsWhatIsIt', 0, 0, 0, 0),
