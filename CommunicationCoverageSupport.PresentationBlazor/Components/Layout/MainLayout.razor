@@ -1,23 +1,47 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<PageTitle>CommunicationCoverageSupport</PageTitle>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
-        <article class="content px-4">
-            @Body
-        </article>
+<div>
+    <NavMenu />
+</div>
+
+<div class="container">
+    <main role="main" class="pb-3">
+        @Body
     </main>
 </div>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+<footer class="bg-dark text-white pt-5 pb-3 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <h5>Support</h5>
+                <p class="small text-muted">Helping businesses manage mobile SIM fleets with control, clarity, and insight.</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h6>Contact Us</h6>
+                <ul class="list-unstyled small">
+                    <li><i class="bi bi-envelope me-2"></i> support@ccs.com</li>
+                    <li><i class="bi bi-telephone me-2"></i> +38 (044) 123-45-67</li>
+                    <li><i class="bi bi-geo-alt me-2"></i> Kyiv, Ukraine</li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h6>Quick Links</h6>
+                <ul class="list-unstyled small">
+                    <li><NavLink class="text-white text-decoration-none" href="/privacy">Privacy Policy</NavLink></li>
+                    <li><NavLink class="text-white text-decoration-none" href="/register">Create Account</NavLink></li>
+                    <li><NavLink class="text-white text-decoration-none" href="/login">Login</NavLink></li>
+                </ul>
+            </div>
+        </div>
+        <hr class="border-secondary" />
+        <div class="text-center small text-muted">
+            &copy; 2025 CommunicationCoverageSupport. All rights reserved.
+        </div>
+    </div>
+</footer>
