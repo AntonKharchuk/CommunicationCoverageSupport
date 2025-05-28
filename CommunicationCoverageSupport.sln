@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationCoverageSuppor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationCoverageSupport.Presentation", "CommunicationCoverageSupport.Presentation\CommunicationCoverageSupport.Presentation.csproj", "{0352FF6C-4463-48B2-81C3-5AEAB7AAB7CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationCoverageSupport.PresentationBlazor", "CommunicationCoverageSupport.PresentationBlazor\CommunicationCoverageSupport.PresentationBlazor.csproj", "{16414776-E95D-4BCD-AC73-B0A10ECCCD4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0352FF6C-4463-48B2-81C3-5AEAB7AAB7CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0352FF6C-4463-48B2-81C3-5AEAB7AAB7CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0352FF6C-4463-48B2-81C3-5AEAB7AAB7CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16414776-E95D-4BCD-AC73-B0A10ECCCD4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16414776-E95D-4BCD-AC73-B0A10ECCCD4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16414776-E95D-4BCD-AC73-B0A10ECCCD4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16414776-E95D-4BCD-AC73-B0A10ECCCD4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
