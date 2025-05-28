@@ -20,7 +20,7 @@ namespace CommunicationCoverageSupport.BLL.Services.SimCards
         public Task<IEnumerable<SimCardDto>> GetAllAsync() => _repository.GetAllAsync();
         public Task<SimCardDto?> GetByIccidAsync(string iccid) => _repository.GetByIccidAsync(iccid);
         public Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid) => _repository.GetFullInfoByIccidAsync(iccid);
-        
+
         public async Task<(int StatusCode, string Message)> CreateAsync(SimCardDto dto)
         {
             string? hlrMessage = null;
@@ -117,6 +117,22 @@ namespace CommunicationCoverageSupport.BLL.Services.SimCards
 
 
 
-        public Task<string> DrainAsync(string iccid, string imsi, string msisdn, int kIndId) => _repository.DrainAsync(iccid, imsi, msisdn, kIndId);
+        public async Task<string> DrainAsync(string iccid, string imsi, string msisdn, int kIndId)
+        {
+            var simCard = await _repository.GetByIccidAsync(iccid);
+
+            if (simCard == null)
+            {
+                return "Error: SIM card not found.";
+            }
+
+            if (simCard.Installed)
+            {
+                return "Error: Cannot drain an installed SIM card.";
+            }
+
+            return await _repository.DrainAsync(iccid, imsi, msisdn, kIndId);
+        }
+
     }
 }
