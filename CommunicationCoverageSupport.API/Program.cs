@@ -3,11 +3,12 @@ using CommunicationCoverageSupport.BLL.Services;
 using CommunicationCoverageSupport.BLL.Services.Auth;
 using CommunicationCoverageSupport.BLL.Services.SimCards;
 using CommunicationCoverageSupport.BLL.Services.TransportKeys;
+using CommunicationCoverageSupport.DAL.Clients;
 using CommunicationCoverageSupport.DAL.Repositories;
 using CommunicationCoverageSupport.DAL.Repositories.Auth;
 using CommunicationCoverageSupport.DAL.Repositories.SimCards;
 using CommunicationCoverageSupport.DAL.Repositories.TransportKeys;
-
+using CommunicationCoverageSupport.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -18,6 +19,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+
+builder.Services.Configure<SshSettings>(builder.Configuration.GetSection("SshSettings"));
+
 
 
 // Authentication - JWT
@@ -44,7 +49,13 @@ var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
 //    };
 //});
 
+// Client for SSH services
+builder.Services.AddScoped<ISshHlrClient, SshHlrClient>();
+
+
 // Business services
+
+
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 

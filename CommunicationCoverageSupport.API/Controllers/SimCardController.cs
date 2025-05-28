@@ -10,7 +10,7 @@ namespace CommunicationCoverageSupport.API.Controllers
     [ApiController]
     public class SimCardController : ControllerBase
     {
-        private readonly ISimCardService _service;
+        private readonly ISimCardService _service; 
 
         public SimCardController(ISimCardService service)
         {
@@ -57,6 +57,13 @@ namespace CommunicationCoverageSupport.API.Controllers
         {
             var message = await _service.DrainAsync(simCardPrimaryKeyDto.Iccid, simCardPrimaryKeyDto.Imsi,
                 simCardPrimaryKeyDto.Msisdn, simCardPrimaryKeyDto.KIndId);
+            return Ok(message);
+        }
+
+        [HttpGet("connection")]
+        public async Task<IActionResult> TestConnection()
+        {
+            var message = await _service.TestConnectionAsync();
             return Ok(message);
         }
     }

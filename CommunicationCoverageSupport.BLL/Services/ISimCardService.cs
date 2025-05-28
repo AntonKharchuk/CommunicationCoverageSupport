@@ -11,5 +11,7 @@ namespace CommunicationCoverageSupport.BLL.Services.SimCards
         Task<bool> CreateAsync(SimCardDto dto);
         Task<bool> UpdateAsync(SimCardDto dto);
         Task<string> DrainAsync(string iccid, string imsi, string msisdn, int kIndId);
+
+        Task<string> TestConnectionAsync();
     }
 }
