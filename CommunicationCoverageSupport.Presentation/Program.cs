@@ -25,6 +25,18 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+if (app.Environment.IsDevelopment())
+{
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path == "/")
+        {
+            context.Response.Redirect("/SimCards"); // or any other page
+            return;
+        }
+        await next();
+    });
+}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -33,3 +45,7 @@ app.UseAuthorization();
 app.UseSession();
 app.MapRazorPages();
 app.Run();
+
+
+
+

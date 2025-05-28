@@ -1,0 +1,79 @@
+﻿@page
+@model CommunicationCoverageSupport.Presentation.Pages.SimCardsModel
+@{
+    ViewData["Title"] = "SIM Cards";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Menu -->
+        <div class="col-md-2 border-end">
+            <h5 class="mt-3">Menu</h5>
+            <ul class="list-unstyled">
+                <li><a href="#" class="text-decoration-none">Dashboard</a></li>
+                <li><a href="#" class="text-decoration-none">Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- SIM Card List -->
+        <div class="col-md-5 border-end">
+            <h4 class="mt-3">List of SIM Cards</h4>
+            <table class="table table-hover" id="simTable">
+                <thead>
+                    <tr>
+                        <th>ICCID</th>
+                        <th>IMSI</th>
+                        <th>MSISDN</th>
+                        <th>Installed</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sim in Model.SimCards)
+                    {
+                        <tr>
+                            <td>@sim.Iccid</td>
+                            <td>@sim.Imsi</td>
+                            <td>@sim.Msisdn</td>
+                            <td>@(sim.Installed ? "Yes" : "No")</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" onclick="loadSimDetails('@sim.Iccid')">View</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SIM Card Details -->
+        <div class="col-md-5">
+            <h4 class="mt-3">SIM Card Details</h4>
+            <div id="simDetails" class="border p-3 bg-light">
+                <p>Select a SIM card to view details.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function loadSimDetails(iccid) {
+            $.ajax({
+                url: `http://localhost:5062/api/SimCard/full/${iccid}`,
+                method: 'GET',
+                success: function (data) {
+                    let html = `<ul class="list-group">`;
+                    for (const key in data) {
+                        html += `<li class="list-group-item"><strong>${key}:</strong> ${data[key]}</li>`;
+                    }
+                    html += `</ul>`;
+                    $('#simDetails').html(html);
+                },
+                error: function () {
+                    $('#simDetails').html('<div class="alert alert-danger">Failed to load SIM card details.</div>');
+                }
+            });
+        }
+    </script>
+}
