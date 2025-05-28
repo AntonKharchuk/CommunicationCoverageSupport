@@ -41,29 +41,30 @@ namespace CommunicationCoverageSupport.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(SimCardDto dto)
         {
-            var created = await _service.CreateAsync(dto);
-            return created ? Ok("Sim card created.") : BadRequest("Failed to create sim card.");
+            var (statusCode, message) = await _service.CreateAsync(dto);
+            return StatusCode(statusCode, message);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(SimCardDto dto)
         {
-            var updated = await _service.UpdateAsync(dto);
-            return updated ? Ok("Sim card updated.") : NotFound();
+            var (statusCode, message) = await _service.UpdateAsync(dto);
+            return StatusCode(statusCode, message);
         }
+
+        [HttpPatch("installed")]
+        public async Task<IActionResult> UpdateInstalledState([FromBody] UpdateInstalledRequestDto request)
+        {
+            var (statusCode, message) = await _service.UpdateInstalledStateAsync(request.PrimaryKey, request.Installed);
+            return StatusCode(statusCode, message);
+        }
+
 
         [HttpPost("drain")]
         public async Task<IActionResult> Drain(SimCardPrimaryKeyDto simCardPrimaryKeyDto)
         {
             var message = await _service.DrainAsync(simCardPrimaryKeyDto.Iccid, simCardPrimaryKeyDto.Imsi,
                 simCardPrimaryKeyDto.Msisdn, simCardPrimaryKeyDto.KIndId);
-            return Ok(message);
-        }
-
-        [HttpGet("connection")]
-        public async Task<IActionResult> TestConnection()
-        {
-            var message = await _service.TestConnectionAsync();
             return Ok(message);
         }
     }

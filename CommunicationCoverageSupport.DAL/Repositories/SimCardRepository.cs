@@ -121,6 +121,27 @@ WHERE iccid = @iccid AND imsi = @imsi AND msisdn = @msisdn AND kIndId = @kIndId"
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
+        public async Task<bool> UpdateInstalledStateAsync(SimCardPrimaryKeyDto keyDto, bool installed)
+        {
+            const string query = @"
+UPDATE simCards SET
+    installed = @installed
+WHERE iccid = @iccid AND imsi = @imsi AND msisdn = @msisdn AND kIndId = @kIndId";
+
+            await using var conn = new MySqlConnection(_connectionString);
+            await conn.OpenAsync();
+            await using var cmd = new MySqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("@installed", installed);
+            cmd.Parameters.AddWithValue("@iccid", keyDto.Iccid);
+            cmd.Parameters.AddWithValue("@imsi", keyDto.Imsi);
+            cmd.Parameters.AddWithValue("@msisdn", keyDto.Msisdn);
+            cmd.Parameters.AddWithValue("@kIndId", keyDto.KIndId);
+
+            return await cmd.ExecuteNonQueryAsync() > 0;
+        }
+
+
         public async Task<string> DrainAsync(string iccid, string imsi, string msisdn, int kIndId)
         {
             const string query = "CALL drainOneSim(@iccid, @imsi, @msisdn, @kIndId)";

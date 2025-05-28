@@ -8,6 +8,7 @@ namespace CommunicationCoverageSupport.DAL.Clients
 {
     public interface ISshHlrClient
     {
-        public Task<string> ExecuteCommandAsync(string command);
+        public Task<string> AddSimCardAsync(string imsi);
+        public Task<string> RemoveSimCardAsync(string imsi);
     }
 }

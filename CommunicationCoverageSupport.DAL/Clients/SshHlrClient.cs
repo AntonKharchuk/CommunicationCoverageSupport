@@ -19,23 +19,42 @@ namespace CommunicationCoverageSupport.DAL.Clients
         {
             _settings = options.Value;
         }
-
-
-
-        public async Task<string> ExecuteCommandAsync(string command)
+        private async Task<string> ExecuteCommandAsync(string command)
         {
             return await Task.Run(() =>
             {
-                using var client = new SshClient(_settings.Host, _settings.Port, _settings.Username, _settings.Password);
-                client.Connect();
+                try
+                {
+                    using var client = new SshClient(_settings.Host, _settings.Port, _settings.Username, _settings.Password);
+                    client.Connect();
 
-                var result = client.RunCommand(command).Result;
-                client.Disconnect();
+                    if (!client.IsConnected)
+                    {
+                        return "Unable to connect to HLR.";
+                    }
 
-                return result;
+                    var result = client.RunCommand(command).Result;
+                    client.Disconnect();
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    return $"SSH command failed - {ex.Message}";
+                }
             });
         }
 
+        public async Task<string> AddSimCardAsync(string imsi)
+        {
+            string command = $"/home/debian1/simcards/add_imsi.sh {imsi}";
+            return await ExecuteCommandAsync(command);
+        }
 
+        public async Task<string> RemoveSimCardAsync(string imsi)
+        {
+            string command = $"/home/debian1/simcards/remove_imsi.sh {imsi}";
+            return await ExecuteCommandAsync(command);
+        }
     }
 }

@@ -20,14 +20,103 @@ namespace CommunicationCoverageSupport.BLL.Services.SimCards
         public Task<IEnumerable<SimCardDto>> GetAllAsync() => _repository.GetAllAsync();
         public Task<SimCardDto?> GetByIccidAsync(string iccid) => _repository.GetByIccidAsync(iccid);
         public Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid) => _repository.GetFullInfoByIccidAsync(iccid);
-        public Task<bool> CreateAsync(SimCardDto dto) => _repository.CreateAsync(dto);
-        public Task<bool> UpdateAsync(SimCardDto dto) => _repository.UpdateAsync(dto);
-        public Task<string> DrainAsync(string iccid, string imsi, string msisdn, int kIndId) => _repository.DrainAsync(iccid, imsi, msisdn, kIndId);
-
-        public async Task<string> TestConnectionAsync()
+        
+        public async Task<(int StatusCode, string Message)> CreateAsync(SimCardDto dto)
         {
-            var output = await _sshHlrClient.ExecuteCommandAsync("echo 'Hello from SSH!'");
-            return output;
+            string? hlrMessage = null;
+
+            if (dto.Installed)
+            {
+                hlrMessage = await _sshHlrClient.AddSimCardAsync(dto.Imsi);
+
+                if (!hlrMessage.Contains("IMSI added", StringComparison.OrdinalIgnoreCase))
+                {
+                    return (400, $"HLR Error: {hlrMessage}");
+                }
+            }
+            hlrMessage = hlrMessage?.Trim() ?? "Skipped";
+
+            var dbResult = await _repository.CreateAsync(dto);
+            if (!dbResult)
+            {
+                return (500, $"HLR: {hlrMessage}, DB: Failed to add SIM card");
+            }
+
+            return (200, $"HLR: {hlrMessage}, DB: SIM card added successfully");
         }
+
+        public async Task<(int StatusCode, string Message)> UpdateAsync(SimCardDto dto)
+        {
+            string? hlrMessage = null;
+
+            if (dto.Installed)
+            {
+                hlrMessage = await _sshHlrClient.AddSimCardAsync(dto.Imsi);
+
+                if (!hlrMessage.Contains("IMSI added", StringComparison.OrdinalIgnoreCase) &&
+                !hlrMessage.Contains("IMSI already exists", StringComparison.OrdinalIgnoreCase))
+                {
+                    return (400, $"HLR Error: {hlrMessage}");
+                }
+            }
+            else
+            {
+                hlrMessage = await _sshHlrClient.RemoveSimCardAsync(dto.Imsi);
+                if (!hlrMessage.Contains("IMSI removed", StringComparison.OrdinalIgnoreCase) &&
+                    !hlrMessage.Contains("IMSI not found", StringComparison.OrdinalIgnoreCase))
+                {
+                    return (400, $"HLR Error: {hlrMessage}");
+                }
+            }
+
+            hlrMessage = hlrMessage?.Trim();
+
+            var dbResult = await _repository.UpdateAsync(dto);
+            if (!dbResult)
+            {
+                return (500, $"HLR: {hlrMessage}, DB: Failed to update SIM card");
+            }
+
+            return (200, $"HLR: {hlrMessage}, DB: SIM card updated successfully");
+        }
+
+        public async Task<(int StatusCode, string Message)> UpdateInstalledStateAsync(SimCardPrimaryKeyDto keyDto, bool installed)
+        {
+            string? hlrMessage = null;
+
+            if (installed)
+            {
+                hlrMessage = await _sshHlrClient.AddSimCardAsync(keyDto.Imsi);
+
+                if (!hlrMessage.Contains("IMSI added", StringComparison.OrdinalIgnoreCase) &&
+                    !hlrMessage.Contains("IMSI already exists", StringComparison.OrdinalIgnoreCase))
+                {
+                    return (400, $"HLR Error: {hlrMessage}");
+                }
+            }
+            else
+            {
+                hlrMessage = await _sshHlrClient.RemoveSimCardAsync(keyDto.Imsi);
+                if (!hlrMessage.Contains("IMSI removed", StringComparison.OrdinalIgnoreCase) &&
+                    !hlrMessage.Contains("IMSI not found", StringComparison.OrdinalIgnoreCase))
+                {
+                    return (400, $"HLR Error: {hlrMessage}");
+                }
+            }
+
+            hlrMessage = hlrMessage?.Trim();
+
+            var dbResult = await _repository.UpdateInstalledStateAsync(keyDto, installed);
+            if (!dbResult)
+            {
+                return (500, $"HLR: {hlrMessage}, DB: Failed to update Installed state");
+            }
+
+            return (200, $"HLR: {hlrMessage}, DB: Installed state updated successfully");
+        }
+
+
+
+        public Task<string> DrainAsync(string iccid, string imsi, string msisdn, int kIndId) => _repository.DrainAsync(iccid, imsi, msisdn, kIndId);
     }
 }
