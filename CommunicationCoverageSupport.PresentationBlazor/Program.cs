@@ -1,6 +1,16 @@
 using CommunicationCoverageSupport.PresentationBlazor.Components;
+using CommunicationCoverageSupport.PresentationBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpClient("ApiClient", (sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var baseUrl = config.GetSection("ApiSettings:BaseUrl").Value;
+    client.BaseAddress = new Uri(baseUrl!);
+});
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
