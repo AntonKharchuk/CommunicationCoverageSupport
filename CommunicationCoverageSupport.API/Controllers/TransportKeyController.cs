@@ -1,12 +1,14 @@
 ﻿using CommunicationCoverageSupport.BLL.Services.TransportKeys;
 using CommunicationCoverageSupport.Models.DTOs;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommunicationCoverageSupport.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class TransportKeyController : ControllerBase
     {
         private readonly ITransportKeyService _service;

@@ -1,12 +1,14 @@
 ﻿using CommunicationCoverageSupport.BLL.Services;
 using CommunicationCoverageSupport.Models.DTOs;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommunicationCoverageSupport.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "admin")]
     public class ArtworkController : ControllerBase
     {
         private readonly IArtworkService _service;

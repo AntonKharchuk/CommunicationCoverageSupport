@@ -3,12 +3,14 @@ using CommunicationCoverageSupport.BLL.Services.SimCards;
 using CommunicationCoverageSupport.Models.DTOs;
 using CommunicationCoverageSupport.Models.DTOs.InfoDTOs;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommunicationCoverageSupport.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "user,admin")]
     public class SimCardDrainController : ControllerBase
     {
         private readonly ISimCardDrainService _service;

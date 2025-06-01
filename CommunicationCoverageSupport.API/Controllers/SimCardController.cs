@@ -2,12 +2,14 @@
 using CommunicationCoverageSupport.Models.DTOs;
 using CommunicationCoverageSupport.Models.DTOs.InfoDTOs;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommunicationCoverageSupport.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "user,admin")]
     public class SimCardController : ControllerBase
     {
         private readonly ISimCardService _service; 
@@ -39,6 +41,7 @@ namespace CommunicationCoverageSupport.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create(SimCardDto dto)
         {
             var (statusCode, message) = await _service.CreateAsync(dto);
@@ -46,6 +49,7 @@ namespace CommunicationCoverageSupport.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Update(SimCardDto dto)
         {
             var (statusCode, message) = await _service.UpdateAsync(dto);
