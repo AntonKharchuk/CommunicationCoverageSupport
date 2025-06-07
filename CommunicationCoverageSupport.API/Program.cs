@@ -23,7 +23,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.Configure<SshSettings>(builder.Configuration.GetSection("SshSettings"));
 
 // SSH Client
-builder.Services.AddScoped<ISshHlrClient, SshHlrClient>();
+builder.Services.AddScoped<ISshHlrClient, SshHlrUbuntuClient>();
 
 // Auth
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();

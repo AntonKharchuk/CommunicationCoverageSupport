@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace CommunicationCoverageSupport.DAL.Clients
 {
-    public class SshHlrClient: ISshHlrClient
+    public class SshHlrDebianClient: ISshHlrClient
     {
 
         private readonly SshSettings _settings;
 
 
-        public SshHlrClient(IOptions<SshSettings> options)
+        public SshHlrDebianClient(IOptions<SshSettings> options)
         {
             _settings = options.Value;
         }
