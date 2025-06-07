@@ -1,0 +1,46 @@
+﻿@page "/acc/delete/{Id:int}"
+@using CommunicationCoverageSupport.Models.DTOs
+@using CommunicationCoverageSupport.PresentationBlazor.Services
+@inject IAccService AccService
+@inject NavigationManager Nav
+@rendermode RenderMode.InteractiveServer
+
+<h3 class="mb-4">Delete Account @Id?</h3>
+
+@if (accModel == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="alert alert-warning">
+        Are you sure you want to delete "<strong>@accModel.Name</strong>"?
+    </div>
+    <button class="btn btn-danger" @onclick="DeleteItem">Yes, delete</button>
+    <button class="btn btn-secondary ms-2"
+            @onclick='() => Nav.NavigateTo("/acc")'>
+        Cancel
+    </button>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private AccDto? accModel;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            accModel = await AccService.GetByIdAsync(Id);
+            StateHasChanged();
+        }
+    }
+
+
+    private async Task DeleteItem()
+    {
+        await AccService.DeleteAsync(Id);
+        Nav.NavigateTo("/acc");
+    }
+}

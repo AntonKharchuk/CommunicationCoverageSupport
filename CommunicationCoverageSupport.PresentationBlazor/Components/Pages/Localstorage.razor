@@ -1,0 +1,42 @@
+﻿@page "/localstorage"
+
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@rendermode RenderMode.InteractiveServer
+
+<h3>Local Storage Example authToken</h3>
+
+<input @bind-value="@inputData" />
+
+<button @onclick="StoreData">Store Data</button>
+<button @onclick="RetrieveData">Retrieve Data</button>
+
+<p>The retrieved data from the LocalStorage: @storedData </p>
+
+@code {
+    private const string dataKey = "authToken";
+
+    private string? storedData;
+    private string? inputData;
+
+    private async Task StoreData()
+    {
+        if (!string.IsNullOrWhiteSpace(inputData))
+        {
+            await localStorage.SetItemAsync(dataKey, inputData);
+            inputData = "";
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await RetrieveData();
+        }
+    }
+
+    private async Task RetrieveData()
+    {
+        storedData = await localStorage.GetItemAsync<string>(dataKey);
+    }
+}

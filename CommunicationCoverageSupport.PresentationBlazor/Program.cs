@@ -1,7 +1,13 @@
+using Blazored.LocalStorage;
+
 using CommunicationCoverageSupport.PresentationBlazor.Components;
 using CommunicationCoverageSupport.PresentationBlazor.Services;
+using CommunicationCoverageSupport.PresentationBlazor.Services.Acc;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddHttpClient("ApiClient", (sp, client) =>
 {
@@ -11,6 +17,8 @@ builder.Services.AddHttpClient("ApiClient", (sp, client) =>
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddScoped<IAccService, AccService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

@@ -1,0 +1,43 @@
+﻿@page "/acc/create"
+@using System.ComponentModel.DataAnnotations
+@using CommunicationCoverageSupport.PresentationBlazor.Services
+@inject IAccService AccService
+@inject NavigationManager Nav
+@rendermode RenderMode.InteractiveServer
+
+<h3 class="mb-4">New Account</h3>
+
+<EditForm Model="createModel" OnValidSubmit="HandleValidSubmit" FormName="AccCreateForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="createModel.Name" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="button" class="btn btn-secondary ms-2"
+            @onclick='() => Nav.NavigateTo("/acc")'>
+        Cancel
+    </button>
+</EditForm>
+
+@code {
+    private CreateModel createModel = new();
+
+    private class CreateModel
+    {
+        [Required]
+        public string? Name { get; set; }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (!string.IsNullOrWhiteSpace(createModel.Name))
+        {
+            await AccService.CreateAsync(createModel.Name);
+            Nav.NavigateTo("/acc");
+        }
+    }
+}

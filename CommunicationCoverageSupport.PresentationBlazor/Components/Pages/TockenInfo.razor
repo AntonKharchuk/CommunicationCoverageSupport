@@ -1,0 +1,75 @@
+﻿@page "/tokeninfo"
+@using System.IdentityModel.Tokens.Jwt
+@using System.Security.Claims
+@using Blazored.LocalStorage
+@inject ILocalStorageService LocalStorage
+@rendermode RenderMode.InteractiveServer
+
+<h3 class="mb-4">Token Information</h3>
+
+@if (token is null)
+{
+    <p>Loading token data...</p>
+}
+else if (token == "__NONE__")
+{
+    <p>No token found in local storage.</p>
+}
+else
+{
+    <div class="mb-3">
+        <label class="form-label">Raw JWT</label>
+        <pre style="white-space: pre-wrap; word-break: break-all;">@token</pre>
+    </div>
+    <h5>Decoded Claims</h5>
+    @if (claims != null && claims.Any())
+    {
+        <table class="table table-sm table-bordered">
+            <thead><tr><th>Claim Type</th><th>Value</th></tr></thead>
+            <tbody>
+                @foreach (var claim in claims)
+                {
+                    <tr>
+                        <td>@claim.Type</td>
+                        <td>@claim.Value</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No claims to display.</p>
+    }
+}
+
+@code {
+    private string? token;
+    private List<Claim> claims = new List<Claim>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        try
+        {
+            var stored = await LocalStorage.GetItemAsync<string>("authToken");
+            if (string.IsNullOrWhiteSpace(stored))
+            {
+                token = "__NONE__";
+            }
+            else
+            {
+                token = stored;
+                var handler = new JwtSecurityTokenHandler();
+                var jwt = handler.ReadJwtToken(stored);
+                claims = jwt.Claims.ToList();
+            }
+        }
+        catch
+        {
+            token = "__NONE__";
+        }
+        StateHasChanged();
+    }
+}

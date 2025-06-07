@@ -1,6 +1,8 @@
-﻿@page "/register"
+﻿@page "/register_admin"
 @using System.ComponentModel.DataAnnotations
 @inject IAuthService AuthService
+@rendermode RenderMode.InteractiveServer
+
 
 <h3 class="mb-4">Register</h3>
 
@@ -41,7 +43,7 @@
             message = "Some fields are missing. Please fill in all required fields.";
             return;
         }
-        var result = await AuthService.RegisterUserAsync(registerModel);
+        var result = await AuthService.RegisterAdminAsync(registerModel);
         message = result ?? "Registration failed. Please try again.";
     }
 

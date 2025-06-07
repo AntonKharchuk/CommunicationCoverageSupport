@@ -1,0 +1,77 @@
+﻿@rendermode RenderMode.InteractiveServer
+@page "/acc"
+@inject NavigationManager Navigation
+@using CommunicationCoverageSupport.Models.DTOs
+@using CommunicationCoverageSupport.PresentationBlazor.Services.Acc
+@inject IAccService AccService
+
+<h3>Accounts</h3>
+
+<div class="d-flex justify-content-end mb-3">
+    <NavLink class="btn btn-success btn-sm" href="/acc/create">
+        Create new
+    </NavLink>
+</div>
+
+@if (accs == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!accs.Any())
+{
+    <p>No accounts found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var acc in accs)
+            {
+                <tr>
+                    <td>@acc.Id</td>
+                    <td>@acc.Name</td>
+                    <td class="text-end">
+                        <button class="btn btn-warning btn-sm me-1"
+                                @onclick="() => NavigateToUpdate(acc.Id)">
+                            Update
+                        </button>
+                        <button class="btn btn-danger btn-sm"
+                                @onclick="() => NavigateToDelete(acc.Id)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<AccDto>? accs;
+
+    private void NavigateToUpdate(int id)
+    {
+        Navigation.NavigateTo($"/acc/edit/{id}");
+    }
+
+    private async Task NavigateToDelete(int id)
+    {
+        Navigation.NavigateTo($"/acc/delete/{id}");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            accs = await AccService.GetAllAsync();
+            StateHasChanged();
+        }
+    }
+}
