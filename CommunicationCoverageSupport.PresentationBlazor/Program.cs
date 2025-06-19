@@ -3,11 +3,13 @@ using Blazored.LocalStorage;
 using CommunicationCoverageSupport.PresentationBlazor.Components;
 using CommunicationCoverageSupport.PresentationBlazor.Services;
 using CommunicationCoverageSupport.PresentationBlazor.Services.Acc;
+using CommunicationCoverageSupport.PresentationBlazor.Services.SimCard;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ISimCardService, SimCardService>();
 
 builder.Services.AddHttpClient("ApiClient", (sp, client) =>
 {

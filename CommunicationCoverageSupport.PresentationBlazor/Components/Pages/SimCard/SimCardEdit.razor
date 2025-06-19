@@ -1,0 +1,155 @@
+﻿// Pages/SimCards/Edit.razor
+@page "/simcards/edit/{Iccid}"
+@using System.ComponentModel.DataAnnotations
+@using CommunicationCoverageSupport.Models.DTOs
+@inject NavigationManager Navigation
+@inject ISimCardService SimCardService
+@rendermode RenderMode.InteractiveServer
+
+<h3>Edit SIM Card</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (editModel == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="editModel" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label class="form-label">ICCID</label>
+            <InputText class="form-control" @bind-Value="editModel.Iccid" disabled />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">IMSI</label>
+            <InputText class="form-control" @bind-Value="editModel.Imsi" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">MSISDN</label>
+            <InputText class="form-control" @bind-Value="editModel.Msisdn" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">KIndId</label>
+            <InputNumber class="form-control" @bind-Value="editModel.KIndId" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ki</label>
+            <InputText class="form-control" @bind-Value="editModel.Ki" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Pin1</label>
+            <InputNumber class="form-control" @bind-Value="editModel.Pin1" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Pin2</label>
+            <InputNumber class="form-control" @bind-Value="editModel.Pin2" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Puk1</label>
+            <InputNumber class="form-control" @bind-Value="editModel.Puk1" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Puk2</label>
+            <InputNumber class="form-control" @bind-Value="editModel.Puk2" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Adm1</label>
+            <InputText class="form-control" @bind-Value="editModel.Adm1" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">ArtworkId</label>
+            <InputNumber TValue="int" class="form-control" @bind-Value="editModel.ArtworkIdInt" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">AccId</label>
+            <InputNumber TValue="int" class="form-control" @bind-Value="editModel.AccIdInt" />
+        </div>
+        <div class="form-check mb-3">
+            <InputCheckbox class="form-check-input" @bind-Value="editModel.Installed" />
+            <label class="form-check-label">Installed</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">CardOwnerId</label>
+            <InputNumber class="form-control" @bind-Value="editModel.CardOwnerId" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary ms-2" @onclick="NavigateToList">Cancel</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public string Iccid { get; set; } = string.Empty;
+    private SimCardModel? editModel;
+    private string? errorMessage;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var result = await SimCardService.GetByIccidAsync(Iccid);
+            if (result.IsSuccess && result.Data != null)
+            {
+                var dto = result.Data;
+                editModel = new SimCardModel
+                {
+                    Iccid = dto.Iccid,
+                    Imsi = dto.Imsi,
+                    Msisdn = dto.Msisdn,
+                    KIndId = dto.KIndId,
+                    Ki = dto.Ki,
+                    Pin1 = dto.Pin1,
+                    Pin2 = dto.Pin2,
+                    Puk1 = dto.Puk1,
+                    Puk2 = dto.Puk2,
+                    Adm1 = dto.Adm1,
+                    ArtworkIdInt = dto.ArtworkId,
+                    AccIdInt = dto.AccId,
+                    Installed = dto.Installed,
+                    CardOwnerId = dto.CardOwnerId
+                };
+            }
+            else
+            {
+                errorMessage = result.Message;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (editModel == null) return;
+        var dto = new SimCardDto
+        {
+            Iccid = editModel.Iccid,
+            Imsi = editModel.Imsi,
+            Msisdn = editModel.Msisdn,
+            KIndId = editModel.KIndId,
+            Ki = editModel.Ki,
+            Pin1 = editModel.Pin1,
+            Pin2 = editModel.Pin2,
+            Puk1 = editModel.Puk1,
+            Puk2 = editModel.Puk2,
+            Adm1 = editModel.Adm1,
+            ArtworkId = (byte)editModel.ArtworkIdInt,
+            AccId = (byte)editModel.AccIdInt,
+            Installed = editModel.Installed,
+            CardOwnerId = editModel.CardOwnerId
+        };
+
+        var result = await SimCardService.UpdateAsync(dto);
+        if (result.IsSuccess)
+            NavigateToList();
+        else
+            errorMessage = result.Message;
+    }
+
+    private void NavigateToList() => Navigation.NavigateTo("/simcards");
+}

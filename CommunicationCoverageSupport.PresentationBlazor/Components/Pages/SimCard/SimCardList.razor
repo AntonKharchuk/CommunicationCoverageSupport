@@ -1,0 +1,93 @@
+﻿@page "/simcards"
+@inject NavigationManager Navigation
+@inject ISimCardService SimCardService
+@rendermode RenderMode.InteractiveServer
+
+<h3>SIM Cards</h3>
+
+<div class="d-flex justify-content-end mb-3">
+    <NavLink class="btn btn-success btn-sm" href="/simcards/create">
+        Create new
+    </NavLink>
+</div>
+
+@if (cards == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!cards.Any())
+{
+    <p>No SIM cards found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ICCID</th>
+                <th>IMSI</th>
+                <th>MSISDN</th>
+                <th>KIndId</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var card in cards)
+            {
+                <tr>
+                    <td>@card.Iccid</td>
+                    <td>@card.Imsi</td>
+                    <td>@card.Msisdn</td>
+                    <td>@card.KIndId</td>
+                    <td class="text-end">
+                        <button class="btn btn-warning btn-sm me-1" @onclick="() => NavigateToEdit(card.Iccid)">Update</button>
+                        <button class="btn btn-danger btn-sm me-1" @onclick="() => NavigateToDelete(card.Iccid)">Delete</button>
+                        <button class="btn btn-info btn-sm" @onclick="() => NavigateToFull(card.Iccid)">Full Info</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+@code {
+    private List<SimCardDto>? cards;
+    private string? errorMessage;
+
+    private void NavigateToEdit(string iccid)
+    {
+        Navigation.NavigateTo($"/simcards/edit/{iccid}");
+    }
+
+    private void NavigateToDelete(string iccid)
+    {
+        Navigation.NavigateTo($"/simcards/delete/{iccid}");
+    }
+
+    private void NavigateToFull(string iccid)
+    {
+        Navigation.NavigateTo($"/simcards/full/{iccid}");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var result = await SimCardService.GetAllAsync();
+            if (result.IsSuccess)
+            {
+                cards = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Message;
+            }
+            StateHasChanged();
+        }
+    }
+}

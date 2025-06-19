@@ -1,0 +1,94 @@
+﻿@page "/simcards/full/{Iccid}"
+@inject NavigationManager Navigation
+@inject ISimCardService SimCardService
+@using CommunicationCoverageSupport.Models.DTOs.InfoDTOs
+@using CommunicationCoverageSupport.Models.DTOs
+@rendermode RenderMode.InteractiveServer
+
+<h3>SIM Card Full Info</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (info == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-3">ICCID</dt>
+        <dd class="col-sm-9">@info.SimCard.Iccid</dd>
+        <dt class="col-sm-3">IMSI</dt>
+        <dd class="col-sm-9">@info.SimCard.Imsi</dd>
+        <dt class="col-sm-3">MSISDN</dt>
+        <dd class="col-sm-9">@info.SimCard.Msisdn</dd>
+        <dt class="col-sm-3">KIndId</dt>
+        <dd class="col-sm-9">@info.SimCard.KIndId</dd>
+        <dt class="col-sm-3">Artwork</dt>
+        <dd class="col-sm-9">@info.Artwork.Name</dd>
+        <dt class="col-sm-3">Account</dt>
+        <dd class="col-sm-9">@info.Acc.Name</dd>
+        <dt class="col-sm-3">Owner</dt>
+        <dd class="col-sm-9">@info.Owner.Name</dd>
+        <dt class="col-sm-3">Transport Key</dt>
+        <dd class="col-sm-9">@info.TransportKey.KInd</dd>
+        <dt class="col-sm-3">Installed</dt>
+        <dd class="col-sm-9">@info.SimCard.Installed</dd>
+    </dl>
+    <div class="d-flex">
+        <button class="btn btn-secondary me-2" @onclick="ToggleInstalled">
+            @(info.SimCard.Installed ? "Mark Uninstalled" : "Mark Installed")
+        </button>
+        <button type="button" class="btn btn-secondary" @onclick="NavigateToList">Back</button>
+    </div>
+}
+
+@code {
+    [Parameter] public string Iccid { get; set; } = null!;
+    private SimCardFullInfoDto? info;
+    private string? errorMessage;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        var result = await SimCardService.GetFullByIccidAsync(Iccid);
+        if (result.IsSuccess)
+            info = result.Data;
+        else
+            errorMessage = result.Message;
+        StateHasChanged();
+    }
+
+    private async Task ToggleInstalled()
+    {
+        if (info == null) return;
+        var request = new UpdateInstalledRequestDto
+        {
+            PrimaryKey = new SimCardPrimaryKeyDto
+            {
+                Iccid = info.SimCard.Iccid,
+                Imsi = info.SimCard.Imsi,
+                Msisdn = info.SimCard.Msisdn,
+                KIndId = info.SimCard.KIndId
+            },
+            Installed = !info.SimCard.Installed
+        };
+        var result = await SimCardService.UpdateInstalledAsync(request);
+        if (result.IsSuccess)
+        {
+            info.SimCard.Installed = !info.SimCard.Installed;
+            StateHasChanged();
+        }
+        else
+        {
+            errorMessage = result.Message;
+        }
+    }
+
+    private void NavigateToList()
+    {
+        Navigation.NavigateTo("/simcards");
+    }
+}

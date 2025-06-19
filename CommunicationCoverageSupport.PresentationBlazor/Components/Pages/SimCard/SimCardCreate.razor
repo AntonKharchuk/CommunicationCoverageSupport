@@ -1,0 +1,114 @@
+﻿
+@page "/simcards/create"
+@using System.ComponentModel.DataAnnotations
+@using CommunicationCoverageSupport.Models.DTOs
+@inject NavigationManager Navigation
+@inject ISimCardService SimCardService
+@rendermode RenderMode.InteractiveServer
+
+<h3 class="mb-4">New SIM Card</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<EditForm Model="createModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">ICCID</label>
+        <InputText class="form-control" @bind-Value="createModel.Iccid" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">IMSI</label>
+        <InputText class="form-control" @bind-Value="createModel.Imsi" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">MSISDN</label>
+        <InputText class="form-control" @bind-Value="createModel.Msisdn" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">KIndId</label>
+        <InputNumber class="form-control" @bind-Value="createModel.KIndId" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Ki</label>
+        <InputText class="form-control" @bind-Value="createModel.Ki" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Pin1</label>
+        <InputNumber class="form-control" @bind-Value="createModel.Pin1" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Pin2</label>
+        <InputNumber class="form-control" @bind-Value="createModel.Pin2" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Puk1</label>
+        <InputNumber class="form-control" @bind-Value="createModel.Puk1" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Puk2</label>
+        <InputNumber class="form-control" @bind-Value="createModel.Puk2" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Adm1</label>
+        <InputText class="form-control" @bind-Value="createModel.Adm1" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">ArtworkId</label>
+        <InputNumber TValue="int" class="form-control" @bind-Value="createModel.ArtworkIdInt" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">AccId</label>
+        <InputNumber TValue="int" class="form-control" @bind-Value="createModel.AccIdInt" />
+    </div>
+    <div class="form-check mb-3">
+        <InputCheckbox class="form-check-input" @bind-Value="createModel.Installed" />
+        <label class="form-check-label">Installed</label>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">CardOwnerId</label>
+        <InputNumber class="form-control" @bind-Value="createModel.CardOwnerId" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="NavigateToList">Cancel</button>
+</EditForm>
+
+@code {
+    private SimCardModel createModel = new();
+    private string? errorMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        var dto = new SimCardDto
+        {
+            Iccid = createModel.Iccid,
+            Imsi = createModel.Imsi,
+            Msisdn = createModel.Msisdn,
+            KIndId = createModel.KIndId,
+            Ki = createModel.Ki,
+            Pin1 = createModel.Pin1,
+            Pin2 = createModel.Pin2,
+            Puk1 = createModel.Puk1,
+            Puk2 = createModel.Puk2,
+            Adm1 = createModel.Adm1,
+            ArtworkId = (byte)createModel.ArtworkIdInt,
+            AccId = (byte)createModel.AccIdInt,
+            Installed = createModel.Installed,
+            CardOwnerId = createModel.CardOwnerId
+        };
+
+        var result = await SimCardService.CreateAsync(dto);
+        if (result.IsSuccess)
+            NavigateToList();
+        else
+            errorMessage = result.Message;
+    }
+
+    private void NavigateToList()
+        => Navigation.NavigateTo("/simcards");
+}
