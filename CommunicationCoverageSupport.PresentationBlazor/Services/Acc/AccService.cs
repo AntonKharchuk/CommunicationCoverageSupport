@@ -1,6 +1,8 @@
 ﻿using Blazored.LocalStorage;
 using CommunicationCoverageSupport.Models.DTOs;
+using CommunicationCoverageSupport.PresentationBlazor.Models;
 using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace CommunicationCoverageSupport.PresentationBlazor.Services.Acc
 {
@@ -29,37 +31,74 @@ namespace CommunicationCoverageSupport.PresentationBlazor.Services.Acc
             return client;
         }
 
-        public async Task<List<AccDto>> GetAllAsync()
+        public async Task<ApiResponse<List<AccDto>>> GetAllAsync()
         {
             var client = await CreateAuthorizedClientAsync();
-            return await client
-                .GetFromJsonAsync<List<AccDto>>("api/Acc")
-                   ?? new List<AccDto>();
+            var response = await client.GetAsync("api/Acc");
+            var content = await response.Content.ReadAsStringAsync();
+            var message = response.ReasonPhrase;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = JsonSerializer.Deserialize<List<AccDto>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                           ?? new List<AccDto>();
+                return new ApiResponse<List<AccDto>> { IsSuccess = true, Data = data };
+            }
+            return new ApiResponse<List<AccDto>> { IsSuccess = false, Message = message };
         }
 
-        public async Task<AccDto?> GetByIdAsync(int id)
+        public async Task<ApiResponse<AccDto>> GetByIdAsync(int id)
         {
             var client = await CreateAuthorizedClientAsync();
-            return await client
-                .GetFromJsonAsync<AccDto>($"api/Acc/{id}");
+            var response = await client.GetAsync($"api/Acc/{id}");
+            var content = await response.Content.ReadAsStringAsync();
+            var message = response.ReasonPhrase;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var dto = JsonSerializer.Deserialize<AccDto>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return new ApiResponse<AccDto> { IsSuccess = true, Data = dto };
+            }
+            return new ApiResponse<AccDto> { IsSuccess = false, Message = message };
         }
 
-        public async Task CreateAsync(string name)
+        public async Task<ApiResponse<bool>> CreateAsync(string name)
         {
             var client = await CreateAuthorizedClientAsync();
-            await client.PostAsJsonAsync("api/Acc", name);
+            var response = await client.PostAsJsonAsync("api/Acc", name);
+            var content = await response.Content.ReadAsStringAsync();
+            var message = response.ReasonPhrase;
+
+            if (response.IsSuccessStatusCode)
+                return new ApiResponse<bool> { IsSuccess = true, Data = true };
+
+            return new ApiResponse<bool> { IsSuccess = false, Message = message };
         }
 
-        public async Task UpdateAsync(int id, string name)
+        public async Task<ApiResponse<bool>> UpdateAsync(int id, string name)
         {
             var client = await CreateAuthorizedClientAsync();
-            await client.PutAsJsonAsync($"api/Acc/{id}", name);
+            var response = await client.PutAsJsonAsync($"api/Acc/{id}", name);
+            var content = await response.Content.ReadAsStringAsync();
+            var message = response.ReasonPhrase;
+
+            if (response.IsSuccessStatusCode)
+                return new ApiResponse<bool> { IsSuccess = true, Data = true };
+
+            return new ApiResponse<bool> { IsSuccess = false, Message = message };
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<ApiResponse<bool>> DeleteAsync(int id)
         {
             var client = await CreateAuthorizedClientAsync();
-            await client.DeleteAsync($"api/Acc/{id}");
+            var response = await client.DeleteAsync($"api/Acc/{id}");
+            var content = await response.Content.ReadAsStringAsync();
+            var message = response.ReasonPhrase;
+
+            if (response.IsSuccessStatusCode)
+                return new ApiResponse<bool> { IsSuccess = true, Data = true };
+
+            return new ApiResponse<bool> { IsSuccess = false, Message = message };
         }
     }
 }

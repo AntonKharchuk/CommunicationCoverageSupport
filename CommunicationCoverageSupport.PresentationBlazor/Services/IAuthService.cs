@@ -6,6 +6,8 @@ namespace CommunicationCoverageSupport.PresentationBlazor.Services
         Task<string?> RegisterUserAsync(UserRegisterDto dto);
         Task<string?> RegisterAdminAsync(UserRegisterDto dto);
         Task<AuthResponseDto?> LoginAsync(UserLoginDto dto);
+
+        Task LogoutAsync();
     }
 
 }

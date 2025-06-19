@@ -54,5 +54,10 @@ namespace CommunicationCoverageSupport.PresentationBlazor.Services
             var response = await client.PostAsJsonAsync("api/Auth/register-admin", dto);
             return response.IsSuccessStatusCode ? await response.Content.ReadAsStringAsync() : null;
         }
+
+        public async Task LogoutAsync()
+        {
+            await _localStorage.RemoveItemAsync("authToken");
+        }
     }
 }

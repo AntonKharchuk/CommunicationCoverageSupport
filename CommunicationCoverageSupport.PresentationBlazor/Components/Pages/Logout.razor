@@ -1,0 +1,24 @@
+﻿@page "/logout"
+@inject IAuthService AuthService
+@inject NavigationManager Nav
+@rendermode RenderMode.InteractiveServer
+
+<h3>Log out?</h3>
+
+<button class="btn btn-danger" @onclick="LogoutAsync">Yes</button>
+<button type="button" class="btn btn-secondary ms-2" @onclick="() => NavigateToHome()">Cancel</button>
+
+
+@code {
+    private async Task LogoutAsync()
+    {
+        await AuthService.LogoutAsync();
+        Nav.NavigateTo("/login");
+    }
+
+    private void NavigateToHome()
+    {
+        Nav.NavigateTo("/home");
+    }
+}
+

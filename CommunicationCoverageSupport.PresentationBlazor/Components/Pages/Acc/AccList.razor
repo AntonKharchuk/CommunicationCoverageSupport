@@ -19,7 +19,7 @@
 }
 else if (!accs.Any())
 {
-    <p>No accounts found.</p>
+    <p>No acc found.</p>
 }
 else
 {
@@ -53,8 +53,14 @@ else
     </table>
 }
 
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
 @code {
     private List<AccDto>? accs;
+    private string? errorMessage;
 
     private void NavigateToUpdate(int id)
     {
@@ -70,7 +76,15 @@ else
     {
         if (firstRender)
         {
-            accs = await AccService.GetAllAsync();
+            var result = await AccService.GetAllAsync();
+            if (result.IsSuccess)
+            {
+                accs = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Message;
+            }
             StateHasChanged();
         }
     }

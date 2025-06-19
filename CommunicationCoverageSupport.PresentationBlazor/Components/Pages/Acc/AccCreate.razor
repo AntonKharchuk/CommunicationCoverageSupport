@@ -1,13 +1,18 @@
 ﻿@page "/acc/create"
 @using System.ComponentModel.DataAnnotations
-@using CommunicationCoverageSupport.PresentationBlazor.Services
+
 @inject IAccService AccService
 @inject NavigationManager Nav
 @rendermode RenderMode.InteractiveServer
 
 <h3 class="mb-4">New Account</h3>
 
-<EditForm Model="createModel" OnValidSubmit="HandleValidSubmit" FormName="AccCreateForm">
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<EditForm Model="createModel" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -17,27 +22,34 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>
-    <button type="button" class="btn btn-secondary ms-2"
-            @onclick='() => Nav.NavigateTo("/acc")'>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="() => NavigateToAcc()">
         Cancel
     </button>
 </EditForm>
 
 @code {
     private CreateModel createModel = new();
+    private string? errorMessage;
 
     private class CreateModel
     {
         [Required]
         public string? Name { get; set; }
     }
+    private void NavigateToAcc()
+    {
+        Nav.NavigateTo($"/acc");
+    }
 
     private async Task HandleValidSubmit()
     {
         if (!string.IsNullOrWhiteSpace(createModel.Name))
         {
-            await AccService.CreateAsync(createModel.Name);
-            Nav.NavigateTo("/acc");
+            var result = await AccService.CreateAsync(createModel.Name);
+            if (result.IsSuccess)
+                Nav.NavigateTo("/acc");
+            else
+                errorMessage = result.Message;
         }
     }
 }

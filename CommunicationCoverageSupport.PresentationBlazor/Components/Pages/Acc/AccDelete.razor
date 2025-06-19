@@ -1,13 +1,15 @@
 ﻿@page "/acc/delete/{Id:int}"
-@using CommunicationCoverageSupport.Models.DTOs
-@using CommunicationCoverageSupport.PresentationBlazor.Services
 @inject IAccService AccService
 @inject NavigationManager Nav
 @rendermode RenderMode.InteractiveServer
 
-<h3 class="mb-4">Delete Account @Id?</h3>
+<h3>Delete Account?</h3>
 
-@if (accModel == null)
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (accModel == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -17,30 +19,41 @@ else
         Are you sure you want to delete "<strong>@accModel.Name</strong>"?
     </div>
     <button class="btn btn-danger" @onclick="DeleteItem">Yes, delete</button>
-    <button class="btn btn-secondary ms-2"
-            @onclick='() => Nav.NavigateTo("/acc")'>
-        Cancel
-    </button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="() => NavigateToAcc()">Cancel</button>
 }
 
 @code {
-    [Parameter] public int Id { get; set; }
+    [Parameter]
+    public int Id { get; set; }
 
     private AccDto? accModel;
-    
+    private string? errorMessage;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            accModel = await AccService.GetByIdAsync(Id);
+            var result = await AccService.GetByIdAsync(Id);
+            if (result.IsSuccess)
+                accModel = result.Data;
+            else
+                errorMessage = result.Message;
+
             StateHasChanged();
         }
     }
 
-
     private async Task DeleteItem()
     {
-        await AccService.DeleteAsync(Id);
+        var result = await AccService.DeleteAsync(Id);
+        if (result.IsSuccess)
+            NavigateToAcc();
+        else
+            errorMessage = result.Message;
+    }
+
+    private void NavigateToAcc()
+    {
         Nav.NavigateTo("/acc");
     }
 }

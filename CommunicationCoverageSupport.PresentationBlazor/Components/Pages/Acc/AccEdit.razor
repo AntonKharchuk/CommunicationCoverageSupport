@@ -1,13 +1,17 @@
-﻿@rendermode RenderMode.InteractiveServer
-@page "/acc/edit/{Id:int}"
+﻿@page "/acc/edit/{Id:int}"
+@using System.ComponentModel.DataAnnotations
 @using CommunicationCoverageSupport.Models.DTOs
-@using CommunicationCoverageSupport.PresentationBlazor.Services.Acc
 @inject IAccService AccService
-@inject NavigationManager Navigation
+@inject NavigationManager Nav
+@rendermode RenderMode.InteractiveServer
 
 <h3>Edit Account</h3>
 
-@if (acc == null)
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (acc == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -18,12 +22,12 @@ else
         <ValidationSummary />
 
         <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <InputText id="name" class="form-control" @bind-Value="acc.Name" />
+            <label class="form-label">Name</label>
+            <InputText class="form-control" @bind-Value="acc.Name" />
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
-        <button type="button" class="btn btn-secondary ms-2" @onclick="Cancel">Cancel</button>
+        <button type="button" class="btn btn-secondary ms-2" @onclick="() => NavigateToAcc()">Cancel</button>
     </EditForm>
 }
 
@@ -32,27 +36,36 @@ else
     public int Id { get; set; }
 
     private AccDto? acc;
+    private string? errorMessage;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            acc = await AccService.GetByIdAsync(Id);
+            var result = await AccService.GetByIdAsync(Id);
+            if (result.IsSuccess)
+                acc = result.Data;
+            else
+                errorMessage = result.Message;
+
             StateHasChanged();
-        }    
+        }
     }
 
     private async Task HandleValidSubmit()
     {
         if (acc != null)
         {
-            await AccService.UpdateAsync(acc.Id, acc.Name);
-            Navigation.NavigateTo("/acc");
+            var result = await AccService.UpdateAsync(acc.Id, acc.Name!);
+            if (result.IsSuccess)
+                NavigateToAcc();
+            else
+                errorMessage = result.Message;
         }
     }
 
-    private void Cancel()
+    private void NavigateToAcc()
     {
-        Navigation.NavigateTo("/acc");
+        Nav.NavigateTo("/acc");
     }
 }
