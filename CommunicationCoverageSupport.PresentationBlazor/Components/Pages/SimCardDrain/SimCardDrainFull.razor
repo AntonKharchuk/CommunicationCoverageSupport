@@ -1,0 +1,84 @@
+﻿@page "/simcarddrains/full/{Iccid}"
+@inject NavigationManager Navigation
+@inject ISimCardService SimCardService
+@using CommunicationCoverageSupport.Models.DTOs.InfoDTOs
+@using CommunicationCoverageSupport.Models.DTOs
+@rendermode RenderMode.InteractiveServer
+
+<h3>Drained SIM Card Full Info</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+@if (info == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-3">ICCID</dt>
+        <dd class="col-sm-9">@info.SimCardDrain.Iccid</dd>
+
+        <dt class="col-sm-3">IMSI</dt>
+        <dd class="col-sm-9">@info.SimCardDrain.Imsi</dd>
+
+        <dt class="col-sm-3">MSISDN</dt>
+        <dd class="col-sm-9">@info.SimCardDrain.Msisdn</dd>
+
+        <dt class="col-sm-3">KIndId</dt>
+        <dd class="col-sm-9">@info.SimCardDrain.KIndId</dd>
+
+        @* Example extra drain-specific fields, uncomment if present *@
+        @* 
+        <dt class="col-sm-3">Drained At</dt>
+        <dd class="col-sm-9">@info.SimCardDrain.DrainDate.ToString("g")</dd>
+
+        <dt class="col-sm-3">Reason</dt>
+        <dd class="col-sm-9">@info.SimCardDrain.Reason</dd>
+        *@
+
+        <dt class="col-sm-3">Artwork</dt>
+        <dd class="col-sm-9">@info.Artwork.Name</dd>
+
+        <dt class="col-sm-3">Account</dt>
+        <dd class="col-sm-9">@info.Acc.Name</dd>
+
+        <dt class="col-sm-3">Owner</dt>
+        <dd class="col-sm-9">@info.Owner.Name</dd>
+
+        <dt class="col-sm-3">Transport Key</dt>
+        <dd class="col-sm-9">@info.TransportKey.KInd</dd>
+    </dl>
+
+    <button class="btn btn-secondary" @onclick="NavigateToList">Back to list</button>
+}
+
+@code {
+    [Parameter] public string Iccid { get; set; } = null!;
+
+    private SimCardDrainFullInfoDto? info;
+    private string? errorMessage;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var result = await SimCardService.GetDrainFullByIccidAsync(Iccid);
+        if (result.IsSuccess)
+        {
+            info = result.Data;
+        }
+        else
+        {
+            errorMessage = result.Message;
+        }
+
+        StateHasChanged();
+    }
+
+    private void NavigateToList()
+        => Navigation.NavigateTo("/simcarddrains");
+}

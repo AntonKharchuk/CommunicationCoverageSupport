@@ -1,0 +1,75 @@
+﻿@page "/simcarddrains"
+@inject NavigationManager Navigation
+@inject ISimCardService SimCardService
+@rendermode RenderMode.InteractiveServer
+
+<h3>Drained SIM Cards</h3>
+
+@if (drains == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!drains.Any())
+{
+    <p>No drained SIM cards found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ICCID</th>
+                <th>IMSI</th>
+                <th>MSISDN</th>
+                <th>KIndId</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in drains)
+            {
+                <tr>
+                    <td>@d.Iccid</td>
+                    <td>@d.Imsi</td>
+                    <td>@d.Msisdn</td>
+                    <td>@d.KIndId</td>
+                    <td class="text-end">
+                        <button class="btn btn-info btn-sm me-1" @onclick="() => NavigateToFull(d.Iccid)">
+                            Full Info
+                        </button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => NavigateToDelete(d.Iccid)">
+                            Remove
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+@code {
+    private List<SimCardDrainDto>? drains;
+    private string? errorMessage;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        var result = await SimCardService.GetDrainsAsync();
+        if (result.IsSuccess)
+            drains = result.Data;
+        else
+            errorMessage = result.Message;
+        StateHasChanged();
+    }
+
+    private void NavigateToFull(string iccid)
+        => Navigation.NavigateTo($"/simcarddrains/full/{iccid}");
+
+    private void NavigateToDelete(string iccid)
+        => Navigation.NavigateTo($"/simcarddrains/delete/{iccid}");
+}

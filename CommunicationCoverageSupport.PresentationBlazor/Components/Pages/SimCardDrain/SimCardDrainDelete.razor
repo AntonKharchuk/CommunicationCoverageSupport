@@ -1,0 +1,60 @@
+﻿@page "/simcarddrains/delete/{Iccid}"
+@inject ISimCardService SimCardService
+@inject NavigationManager Navigation
+@rendermode RenderMode.InteractiveServer
+
+<h3>Remove Drained SIM Card?</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (drain == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="alert alert-warning">
+        Are you sure you want to remove the drain record for ICCID
+        <strong>@drain.Iccid</strong>?
+    </div>
+    <button class="btn btn-danger" @onclick="DeleteItem">Yes, remove</button>
+    <button class="btn btn-secondary ms-2" @onclick="NavigateToList">Cancel</button>
+}
+
+@code {
+    [Parameter] public string Iccid { get; set; } = string.Empty;
+    private SimCardDrainDto? drain;
+    private string? errorMessage;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        var result = await SimCardService.GetDrainByIccidAsync(Iccid);
+        if (result.IsSuccess)
+            drain = result.Data;
+        else
+            errorMessage = result.Message;
+        StateHasChanged();
+    }
+
+    private async Task DeleteItem()
+    {
+        if (drain == null) return;
+        var request = new SimCardPrimaryKeyDto
+            {
+                Iccid = drain.Iccid,
+                Imsi = drain.Imsi,
+                Msisdn = drain.Msisdn,
+                KIndId = drain.KIndId
+            };
+        var result = await SimCardService.DeleteDrainAsync(request);
+        if (result.IsSuccess)
+            NavigateToList();
+        else
+            errorMessage = result.Message;
+    }
+
+    private void NavigateToList() => Navigation.NavigateTo("/simcarddrains");
+}
