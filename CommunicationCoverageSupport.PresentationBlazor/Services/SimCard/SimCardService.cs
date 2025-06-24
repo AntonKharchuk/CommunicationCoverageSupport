@@ -66,7 +66,7 @@ namespace CommunicationCoverageSupport.PresentationBlazor.Services.SimCard
             if (resp.IsSuccessStatusCode)
             {
                 var dto = await resp.Content.ReadFromJsonAsync<SimCardDto>();
-                return new ApiResponse<SimCardDto> { IsSuccess = true, Data = dto };
+                return new ApiResponse<SimCardDto> { IsSuccess = true, Data = dto, };
             }
             return new ApiResponse<SimCardDto> { IsSuccess = false, Message = msg };
         }
@@ -110,7 +110,7 @@ namespace CommunicationCoverageSupport.PresentationBlazor.Services.SimCard
             var resp = await client.PatchAsJsonAsync("api/SimCard/installed", request);
             var msg = ExtractMessage(resp);
             return resp.IsSuccessStatusCode
-                ? new ApiResponse<bool> { IsSuccess = true, Data = true }
+                ? new ApiResponse<bool> { IsSuccess = true, Data = true, Message = msg }
                 : new ApiResponse<bool> { IsSuccess = false, Message = msg };
         }
 

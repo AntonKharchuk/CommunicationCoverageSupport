@@ -2,23 +2,26 @@
     <div class="container">
         <NavLink class="navbar-brand fw-bold" href="/">CommunicationCoverageSupport</NavLink>
 
-        <div class="collapse navbar-collapse" id="navbarMain">
-            <!-- left‐aligned nav items -->
-            <ul class="navbar-nav me-auto mb-2 ">
-                
-                <li class="nav-item">
-                    <NavLink class="btn btn-outline-primary me-2" ActiveClass="" href="/acc">Acc</NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="btn btn-outline-primary me-2" ActiveClass="" href="/simcards">Sim cards</NavLink>
-                </li>
-            </ul>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <!-- right‐aligned buttons, kept on one line with d-flex -->
-            <div class="d-flex">
-                <NavLink class="btn btn-outline-primary me-2" ActiveClass="" href="/login">Login</NavLink>
-                <NavLink class="btn btn-primary text-white me-2" href="/register">Sign Up</NavLink>
-                <NavLink class="btn btn-secondary text-white me-2" href="/logout">Logout</NavLink>
+        <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarMain">
+            <!-- Left-aligned nav buttons -->
+            <div class="d-flex flex-wrap">
+                <NavLink class="btn btn-outline-primary me-2 mb-2" href="/acc">Acc</NavLink>
+                <NavLink class="btn btn-outline-primary me-2 mb-2" href="/simcards">Sim cards</NavLink>
+                <NavLink class="btn btn-outline-primary me-2 mb-2" href="/acc">Drain</NavLink>
+                <NavLink class="btn btn-outline-primary me-2 mb-2" href="/acc">Owner</NavLink>
+                <NavLink class="btn btn-outline-primary me-2 mb-2" href="/acc">Transport Key</NavLink>
+            </div>
+
+            <!-- Right-aligned action buttons -->
+            <div class="d-flex flex-wrap">
+                <NavLink class="btn btn-outline-primary me-2 mb-2" href="/login">Login</NavLink>
+                <NavLink class="btn btn-primary text-white me-2 mb-2" href="/register">Sign Up</NavLink>
+                <NavLink class="btn btn-secondary text-white mb-2" href="/logout">Logout</NavLink>
             </div>
         </div>
     </div>

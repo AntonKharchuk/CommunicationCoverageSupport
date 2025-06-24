@@ -50,7 +50,7 @@
         var result = await AuthService.LoginAsync(loginModel);
       
         message = result != null
-            ? $"Login successful. Token: {result.Token}"
+            ? $"Login successful."
             : "Login failed. Please check your credentials.";
     }
 }
