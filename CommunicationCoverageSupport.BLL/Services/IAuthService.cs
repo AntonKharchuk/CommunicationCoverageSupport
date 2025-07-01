@@ -7,5 +7,7 @@ namespace CommunicationCoverageSupport.BLL.Services.Auth
     {
         Task<bool> RegisterAsync(UserRegister registeredUser);
         Task<AuthResponseDto?> LoginAsync(UserLoginDto dto);
+        Task<AuthResponseDto?> TestLoginAsync();
+
     }
 }
