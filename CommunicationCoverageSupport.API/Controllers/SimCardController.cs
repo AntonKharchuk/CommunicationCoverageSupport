@@ -33,6 +33,13 @@ namespace CommunicationCoverageSupport.API.Controllers
             return result != null ? Ok(result) : NotFound();
         }
 
+        [HttpGet("imsi/{imsi}")]
+        public async Task<IActionResult> GetByImsi(string imsi)
+        {
+            var result = await _service.GetByImsiAsync(imsi);
+            return result != null ? Ok(result) : NotFound();
+        }
+
         [HttpGet("full/{iccid}")]
         public async Task<IActionResult> GetFullInfoByIccid(string iccid)
         {

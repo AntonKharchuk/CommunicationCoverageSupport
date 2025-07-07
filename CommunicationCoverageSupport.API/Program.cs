@@ -4,6 +4,7 @@ using CommunicationCoverageSupport.BLL.Services.Auth;
 using CommunicationCoverageSupport.BLL.Services.SimCards;
 using CommunicationCoverageSupport.BLL.Services.TransportKeys;
 using CommunicationCoverageSupport.DAL.Clients;
+using CommunicationCoverageSupport.DAL.Clients.HLR;
 using CommunicationCoverageSupport.DAL.Repositories;
 using CommunicationCoverageSupport.DAL.Repositories.Auth;
 using CommunicationCoverageSupport.DAL.Repositories.SimCards;
@@ -18,12 +19,27 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Add services to the container.
+// Add hlr client
+
+builder.Services.Configure<CommunicationCoverageSupport.DAL.Clients.HLR.HlrSettings>(
+    builder.Configuration.GetSection("HlrSettings"));
+
+builder.Services.AddHttpClient("HlrClient", (sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var hlrSettings = config.GetSection("HlrSettings");
+    var baseUrl = hlrSettings["Url"];
+
+    client.BaseAddress = new Uri(baseUrl!);
+});
+builder.Services.AddSingleton<ICai3gHlrClient, Cai3gHlrClient>();
+
+
 // Database, SSH, etc.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.Configure<SshSettings>(builder.Configuration.GetSection("SshSettings"));
-
-// SSH Client
-builder.Services.AddScoped<ISshHlrClient, SshHlrUbuntuClient>();
 
 // Auth
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
@@ -31,7 +47,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Other repositories & services...
 builder.Services.AddScoped<ISimCardRepository, SimCardRepository>();
-builder.Services.AddScoped<ISimCardService, SimCardService>();
+builder.Services.AddScoped<ISimCardService, SimCardHlrService>();
 
 builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
 builder.Services.AddScoped<IArtworkService, ArtworkService>();

@@ -44,6 +44,19 @@ namespace CommunicationCoverageSupport.DAL.Repositories.SimCards
             await using var reader = await cmd.ExecuteReaderAsync();
             return await reader.ReadAsync() ? MapToSimCard(reader) : null;
         }
+        public async Task<SimCardDto?> GetByImsiAsync(string imsi)
+        {
+            const string query = "SELECT * FROM simCards WHERE imsi = @imsi";
+
+            await using var conn = new MySqlConnection(_connectionString);
+            await conn.OpenAsync();
+            await using var cmd = new MySqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@imsi", imsi);
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+            return await reader.ReadAsync() ? MapToSimCard(reader) : null;
+        }
+
 
         public async Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid)
         {

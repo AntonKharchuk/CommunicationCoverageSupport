@@ -53,7 +53,8 @@ namespace CommunicationCoverageSupport.PresentationBlazor.Services.SimCard
             if (resp.IsSuccessStatusCode)
             {
                 var data = await resp.Content.ReadFromJsonAsync<List<SimCardDto>>() ?? new List<SimCardDto>();
-                return new ApiResponse<List<SimCardDto>> { IsSuccess = true, Data = data };
+                var limitedData = data.Take(10).ToList();
+                return new ApiResponse<List<SimCardDto>> { IsSuccess = true, Data = limitedData };
             }
             return new ApiResponse<List<SimCardDto>> { IsSuccess = false, Message = msg };
         }

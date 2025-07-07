@@ -7,6 +7,7 @@ namespace CommunicationCoverageSupport.BLL.Services.SimCards
     {
         Task<IEnumerable<SimCardDto>> GetAllAsync();
         Task<SimCardDto?> GetByIccidAsync(string iccid);
+        Task<SimCardDto?> GetByImsiAsync(string imsi);
         Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid);
         Task<(int StatusCode, string Message)> CreateAsync(SimCardDto dto);
         Task<(int StatusCode, string Message)> UpdateAsync(SimCardDto dto);
