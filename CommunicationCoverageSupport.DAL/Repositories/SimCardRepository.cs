@@ -4,6 +4,7 @@ using CommunicationCoverageSupport.Models.DTOs.InfoDTOs;
 using Microsoft.Extensions.Configuration;
 
 using MySqlConnector;
+using System.Globalization;
 
 namespace CommunicationCoverageSupport.DAL.Repositories.SimCards
 {
@@ -83,7 +84,35 @@ WHERE s.iccid = @iccid";
                 Acc = new AccDto { Id = reader.GetByte("accId"), Name = reader.GetString("accName") },
                 Artwork = new ArtworkDto { Id = reader.GetByte("artworkId"), Name = reader.GetString("artworkName") },
                 Owner = new OwnerDto { Id = reader.GetInt64("cardOwnerId"), Name = reader.GetString("ownerName") },
-                TransportKey = new TransportKeyDto { Id = reader.GetByte("kIndId"), KInd = reader.GetString("kInd") }
+                TransportKey = new TransportKeyDto { Id = reader.GetInt32("kIndId"), KInd = reader.GetString("kInd") }
+            };
+        }
+        public async Task<SimCardFullInfoDto?> GetFullInfoByImsiAsync(string imsi)
+        {
+            const string query = @"
+SELECT s.*, a.name AS accName, ar.name AS artworkName, o.name AS ownerName, tk.kInd
+FROM simCards s
+JOIN acc a ON s.accId = a.id
+JOIN artwork ar ON s.artworkId = ar.id
+JOIN owners o ON s.cardOwnerId = o.id
+JOIN transportKey tk ON s.kIndId = tk.id
+WHERE s.imsi = @imsi";
+
+            await using var conn = new MySqlConnection(_connectionString);
+            await conn.OpenAsync();
+            await using var cmd = new MySqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@imsi", imsi);
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+            if (!await reader.ReadAsync()) return null;
+
+            return new SimCardFullInfoDto
+            {
+                SimCard = MapToSimCard(reader),
+                Acc = new AccDto { Id = reader.GetByte("accId"), Name = reader.GetString("accName") },
+                Artwork = new ArtworkDto { Id = reader.GetByte("artworkId"), Name = reader.GetString("artworkName") },
+                Owner = new OwnerDto { Id = reader.GetInt64("cardOwnerId"), Name = reader.GetString("ownerName") },
+                TransportKey = new TransportKeyDto { Id = reader.GetInt32("kIndId"), KInd = reader.GetString("kInd") }
             };
         }
 

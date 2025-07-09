@@ -9,6 +9,8 @@ namespace CommunicationCoverageSupport.BLL.Services.SimCards
         Task<SimCardDto?> GetByIccidAsync(string iccid);
         Task<SimCardDto?> GetByImsiAsync(string imsi);
         Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid);
+        Task<SimCardFullInfoDto?> GetFullInfoByImsiAsync(string imsi);
+        
         Task<(int StatusCode, string Message)> CreateAsync(SimCardDto dto);
         Task<(int StatusCode, string Message)> UpdateAsync(SimCardDto dto);
         Task<(int StatusCode, string Message)> UpdateInstalledStateAsync(SimCardPrimaryKeyDto keyDto, bool installed);

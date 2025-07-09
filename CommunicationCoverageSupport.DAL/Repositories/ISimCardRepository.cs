@@ -15,6 +15,7 @@ namespace CommunicationCoverageSupport.DAL.Repositories
         Task<SimCardDto?> GetByIccidAsync(string iccid);
         Task<SimCardDto?> GetByImsiAsync(string imsi);
         Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid);
+        Task<SimCardFullInfoDto?> GetFullInfoByImsiAsync(string imsi);
         Task<bool> CreateAsync(SimCardDto simCard);
         Task<bool> UpdateAsync(SimCardDto simCard);
         Task<bool> UpdateInstalledStateAsync(SimCardPrimaryKeyDto keyDto, bool installed);

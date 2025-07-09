@@ -62,7 +62,7 @@ namespace CommunicationCoverageSupport.PresentationBlazor.Services.SimCard
         public async Task<ApiResponse<SimCardDto>> GetByIccidAsync(string iccid)
         {
             var client = await CreateAuthorizedClientAsync();
-            var resp = await client.GetAsync($"api/SimCard/{iccid}");
+            var resp = await client.GetAsync($"api/SimCard/iccid/{iccid}");
             var msg = ExtractMessage(resp);
             if (resp.IsSuccessStatusCode)
             {
@@ -75,7 +75,7 @@ namespace CommunicationCoverageSupport.PresentationBlazor.Services.SimCard
         public async Task<ApiResponse<SimCardFullInfoDto>> GetFullByIccidAsync(string iccid)
         {
             var client = await CreateAuthorizedClientAsync();
-            var resp = await client.GetAsync($"api/SimCard/full/{iccid}");
+            var resp = await client.GetAsync($"api/SimCard/iccid/full/{iccid}");
             var msg = ExtractMessage(resp);
             if (resp.IsSuccessStatusCode)
             {

@@ -26,7 +26,7 @@ namespace CommunicationCoverageSupport.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{iccid}")]
+        [HttpGet("iccid/{iccid}")]
         public async Task<IActionResult> GetByIccid(string iccid)
         {
             var result = await _service.GetByIccidAsync(iccid);
@@ -40,7 +40,14 @@ namespace CommunicationCoverageSupport.API.Controllers
             return result != null ? Ok(result) : NotFound();
         }
 
-        [HttpGet("full/{iccid}")]
+        [HttpGet("imsi/full/{imsi}")]
+        public async Task<IActionResult> GetFullInfoByImsi(string imsi)
+        {
+            var result = await _service.GetFullInfoByImsiAsync(imsi);
+            return result != null ? Ok(result) : NotFound();
+        }
+
+        [HttpGet("iccid/full/{iccid}")]
         public async Task<IActionResult> GetFullInfoByIccid(string iccid)
         {
             var result = await _service.GetFullInfoByIccidAsync(iccid);

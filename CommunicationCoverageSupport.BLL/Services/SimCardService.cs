@@ -135,5 +135,9 @@ namespace CommunicationCoverageSupport.BLL.Services.SimCards
             return await _repository.DrainAsync(iccid, imsi, msisdn, kIndId);
         }
 
+        public Task<SimCardFullInfoDto?> GetFullInfoByImsiAsync(string imsi)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
