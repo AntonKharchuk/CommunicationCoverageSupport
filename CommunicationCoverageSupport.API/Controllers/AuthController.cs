@@ -67,5 +67,15 @@ namespace CommunicationCoverageSupport.API.Controllers
 
             return Ok(response);
         }
+        [HttpGet("test_login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> TestLogin()
+        {
+            var response = await _authService.TestLoginAsync();
+            if (response == null)
+                return Unauthorized("Invalid credentials.");
+
+            return Ok(response);
+        }
     }
 }

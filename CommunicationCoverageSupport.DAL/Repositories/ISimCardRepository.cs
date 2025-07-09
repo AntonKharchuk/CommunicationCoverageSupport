@@ -13,6 +13,7 @@ namespace CommunicationCoverageSupport.DAL.Repositories
     {
         Task<IEnumerable<SimCardDto>> GetAllAsync();
         Task<SimCardDto?> GetByIccidAsync(string iccid);
+        Task<SimCardDto?> GetByImsiAsync(string imsi);
         Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid);
         Task<bool> CreateAsync(SimCardDto simCard);
         Task<bool> UpdateAsync(SimCardDto simCard);
