@@ -38,6 +38,13 @@ else
         <dt class="col-sm-3">Installed</dt>
         <dd class="col-sm-9">@info.SimCard.Installed</dd>
     </dl>
+
+    <h3>Info From HLR</h3>
+    <dl class="row">
+        <dt class="col-sm-3">HlrMsisdnState</dt>
+        <dd class="col-sm-9">@info.HlrStatus.MsisdnState</dd>
+    </dl>
+
     <div class="d-flex">
         <button class="btn btn-secondary me-2" @onclick="ToggleInstalled">
             @(info.SimCard.Installed ? "Mark Uninstalled" : "Mark Installed")
@@ -57,6 +64,7 @@ else
         var result = await SimCardService.GetFullByIccidAsync(Iccid);
         if (result.IsSuccess)
             info = result.Data;
+            info.HlrStatus.MsisdnState = info.HlrStatus.MsisdnState == null ? "Not found" : info.HlrStatus.MsisdnState;
        
         errorMessage = result.Message;
         StateHasChanged();

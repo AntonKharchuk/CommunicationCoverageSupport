@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunicationCoverageSupport.Models.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace CommunicationCoverageSupport.DAL.Clients.HLR
 {
     public interface ICai3gHlrClient
     {
-        Task<string> GetAsync(string imsi);
+        Task<HlrStatusDto> GetAsync(string imsi);
 
         Task LoginAsync();
     }

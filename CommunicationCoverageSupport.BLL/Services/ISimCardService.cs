@@ -5,7 +5,7 @@ namespace CommunicationCoverageSupport.BLL.Services.SimCards
 {
     public interface ISimCardService
     {
-        Task<IEnumerable<SimCardDto>> GetAllAsync();
+        Task<IEnumerable<SimCardDto>> GetAllAsync(int page);
         Task<SimCardDto?> GetByIccidAsync(string iccid);
         Task<SimCardDto?> GetByImsiAsync(string imsi);
         Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid);

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using CommunicationCoverageSupport.Models.DTOs;
+using Microsoft.Extensions.Options;
 using System.Net.Http;
 using System.Text;
 using System.Xml.Linq;
@@ -38,7 +39,7 @@ namespace CommunicationCoverageSupport.DAL.Clients.HLR
 
             return _sessionId;
         }
-        public async Task<string> GetAsync(string imsi)
+        public async Task<HlrStatusDto> GetAsync(string imsi)
         {
             string sessionId = await GetSessionIdAsync();
 
@@ -65,23 +66,22 @@ namespace CommunicationCoverageSupport.DAL.Clients.HLR
                 Content = new StringContent(requestBody, Encoding.UTF8, "text/xml")
             };
 
-            try
+            var response = await _httpClient.SendAsync(request);
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            XDocument doc = XDocument.Parse(responseContent);
+
+            XNamespace gsmNs = "http://schemas.ericsson.com/ema/UserProvisioning/GsmHlr/";
+
+            var msisdnState = doc.Descendants(gsmNs + "msisdnstate").FirstOrDefault()?.Value;
+
+            HlrStatusDto hlrStatus = new HlrStatusDto
             {
-                var response = await _httpClient.SendAsync(request);
+                Imsi = imsi,
+                MsisdnState = msisdnState
+            };
 
-                string responseContent = await response.Content.ReadAsStringAsync();
-                XDocument doc = XDocument.Parse(responseContent);
-
-                XNamespace gsmNs = "http://schemas.ericsson.com/ema/UserProvisioning/GsmHlr/";
-
-                var msisdnState = doc.Descendants(gsmNs + "msisdnstate").FirstOrDefault()?.Value;
-
-                return msisdnState;
-            }
-            catch (HttpRequestException ex)
-            {
-                return $"HTTP Request failed: {ex.Message}";
-            }
+            return hlrStatus;
         }
 
 

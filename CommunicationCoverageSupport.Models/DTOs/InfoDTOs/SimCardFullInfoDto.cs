@@ -10,6 +10,7 @@ namespace CommunicationCoverageSupport.Models.DTOs.InfoDTOs
         public AccDto Acc { get; set; } = null!;
         public OwnerDto Owner { get; set; } = null!;
         public TransportKeyDto TransportKey { get; set; } = null!;
+        public HlrStatusDto HlrStatus { get; set; } = null!;
     }
 
 }

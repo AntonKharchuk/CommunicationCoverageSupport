@@ -20,9 +20,9 @@ namespace CommunicationCoverageSupport.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1)
         {
-            var result = await _service.GetAllAsync();
+            var result = await _service.GetAllAsync(page);
             return Ok(result);
         }
 

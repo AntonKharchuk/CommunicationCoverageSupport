@@ -17,7 +17,7 @@ namespace CommunicationCoverageSupport.BLL.Services.SimCards
             _sshHlrClient = sshHlrClient;
         }
 
-        public Task<IEnumerable<SimCardDto>> GetAllAsync() => _repository.GetAllAsync();
+        public Task<IEnumerable<SimCardDto>> GetAllAsync(int page) => _repository.GetAllAsync(page);
         public Task<SimCardDto?> GetByIccidAsync(string iccid) => _repository.GetByIccidAsync(iccid);
         public Task<SimCardDto?> GetByImsiAsync(string imsi) => _repository.GetByImsiAsync(imsi);
         public Task<SimCardFullInfoDto?> GetFullInfoByIccidAsync(string iccid) => _repository.GetFullInfoByIccidAsync(iccid);

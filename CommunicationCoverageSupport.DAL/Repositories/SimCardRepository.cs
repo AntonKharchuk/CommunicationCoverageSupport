@@ -4,6 +4,8 @@ using CommunicationCoverageSupport.Models.DTOs.InfoDTOs;
 using Microsoft.Extensions.Configuration;
 
 using MySqlConnector;
+using Org.BouncyCastle.Utilities.IO;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace CommunicationCoverageSupport.DAL.Repositories.SimCards
@@ -17,14 +19,19 @@ namespace CommunicationCoverageSupport.DAL.Repositories.SimCards
             _connectionString = configuration.GetConnectionString("DefaultConnection")!;
         }
 
-        public async Task<IEnumerable<SimCardDto>> GetAllAsync()
+        public async Task<IEnumerable<SimCardDto>> GetAllAsync(int page)
         {
+            var limit = 10;
             var list = new List<SimCardDto>();
-            const string query = "SELECT * FROM simCards";
+            var offset = (page - 1) * limit;
+            const string query = "SELECT * FROM simCards LIMIT @limit Offset @offset";
 
             await using var conn = new MySqlConnection(_connectionString);
             await conn.OpenAsync();
             await using var cmd = new MySqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@limit", limit);
+            cmd.Parameters.AddWithValue("@offset", offset);
+
             await using var reader = await cmd.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
